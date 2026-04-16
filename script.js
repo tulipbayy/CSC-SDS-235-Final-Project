@@ -24,7 +24,7 @@ function getCategory(d) {
   return d.Category || d["Category "] || d["Category Breakdown"] || d[8];
 }
 
-d3.csv("categories.csv").then(data => {
+d3.csv("Categories.csv").then(data => {
 
   let rows = [];
 
