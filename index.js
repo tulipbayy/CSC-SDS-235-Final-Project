@@ -9,7 +9,7 @@ fetch("data_Totals.csv")
       return {
         distributor: cols[0].replace(/"/g, "").trim(),
         total: cleanNumber(cols[1]),
-        local: cleanNumber(cols[3]) // THIS is key column
+        local: cleanNumber(cols[3]) 
       };
     });
 
@@ -18,60 +18,74 @@ fetch("data_Totals.csv")
     buildSankey(data);
   });
 
-function cleanNumber(str) {
-  return Number(str?.replace(/[$,"]/g, "")) || 0;
-}
+const data = {
+  nodes: [
+    { name: "Total Budget" },
+    { name: "Non-Local Distributor" },
+    { name: "Local Distributor" },
+    { name: "Local Food" },
+    { name: "Non-Local Food" }
+  ],
+  links: [
+    { source: 0, target: 1, value: 4500000 },
+    { source: 0, target: 2, value: 62000 },
 
-function buildSankey(data) {
+    { source: 1, target: 3, value: 90000 },  
+    { source: 1, target: 4, value: 4400000 },
 
-  const labels = [
-    "Total Budget",
-    "Non-Local Distributor",
-    "Local Distributor",
-    "Local Food",
-    "Non-Local Food"
-  ];
+    { source: 2, target: 3, value: 62000 }
+  ]
+};
 
-  const index = Object.fromEntries(labels.map((d, i) => [d, i]));
+// SVG setup
+const width = 800;
+const height = 500;
 
-  let source = [];
-  let target = [];
-  let value = [];
+const svg = d3.select("#sankey")
+  .append("svg")
+  .attr("width", width)
+  .attr("height", height);
 
-  data.forEach(d => {
+// Sankey generator
+const sankey = d3.sankey()
+  .nodeWidth(20)
+  .nodePadding(10)
+  .extent([[1, 1], [width - 1, height - 6]]);
 
-    const isLocalDistributor = d.local > d.total * 0.5; 
-    // simple assumption for now
+const graph = sankey({
+  nodes: data.nodes.map(d => Object.assign({}, d)),
+  links: data.links.map(d => Object.assign({}, d))
+});
 
-    const distributorType = isLocalDistributor
-      ? "Local Distributor"
-      : "Non-Local Distributor";
+// Draw links
+svg.append("g")
+  .selectAll("path")
+  .data(graph.links)
+  .join("path")
+  .attr("d", d3.sankeyLinkHorizontal())
+  .attr("stroke-width", d => d.width)
+  .attr("stroke", "#999")
+  .attr("fill", "none")
+  .attr("opacity", 0.5);
 
-    const nonLocalAmount = d.total - d.local;
+// Draw nodes
+svg.append("g")
+  .selectAll("rect")
+  .data(graph.nodes)
+  .join("rect")
+  .attr("x", d => d.x0)
+  .attr("y", d => d.y0)
+  .attr("height", d => d.y1 - d.y0)
+  .attr("width", d => d.x1 - d.x0)
+  .attr("fill", "#69b3a2");
 
-    // Total → Distributor Type
-    source.push(index["Total Budget"]);
-    target.push(index[distributorType]);
-    value.push(d.total);
-
-    // Distributor Type → Outcomes
-    if (d.local > 0) {
-      source.push(index[distributorType]);
-      target.push(index["Local Food"]);
-      value.push(d.local);
-    }
-
-    if (nonLocalAmount > 0) {
-      source.push(index[distributorType]);
-      target.push(index["Non-Local Food"]);
-      value.push(nonLocalAmount);
-    }
-
-  });
-
-  Plotly.newPlot("sankey", [{
-    type: "sankey",
-    node: { label: labels },
-    link: { source, target, value }
-  }]);
-}
+// Labels
+svg.append("g")
+  .selectAll("text")
+  .data(graph.nodes)
+  .join("text")
+  .attr("x", d => d.x0 - 6)
+  .attr("y", d => (d.y1 + d.y0) / 2)
+  .attr("dy", "0.35em")
+  .attr("text-anchor", "end")
+  .text(d => d.name);
