@@ -1,72 +1,11 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
+  font-family: Arial, sans-serif;
 }
 
-#map {
-    margin-top: 20px;
+.bar {
+  stroke: none;
 }
 
-#bar-chart {
-    margin-top: 20px;
-}
-
-.chart-legend {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  margin-top: 12px;
-  font-size: 14px;
-}
-
-.chart-legend span {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.chart-legend .color-swatch {
-  width: 16px;
-  height: 16px;
-  display: inline-block;
-  border-radius: 3px;
-}
-
-
-#sankey {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-svg {
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-} 
-path {
-  fill: none;
-  stroke-opacity: 0.4;
-  transition: stroke-opacity 0.2s;
-}
-
-path:hover {
-  stroke-opacity: 0.8;
-}
-
-rect {
-  stroke: #333;
-  stroke-width: 1px;
-}
-
-text {
+.axis text {
   font-size: 12px;
-  fill: #333;
-}
-
-h2 {
-  text-align: center;
-  margin-top: 20px;
-  font-weight: 500;
 }

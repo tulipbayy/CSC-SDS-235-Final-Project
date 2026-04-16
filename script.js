@@ -1,271 +1,131 @@
-async function drawMap() {
+const width = 950;
+const height = 550;
+const margin = { top: 40, right: 30, bottom: 140, left: 80 };
 
-    const width = 800;
-    const height = 500;
+const svg = d3.select("#chart")
+  .append("svg")
+  .attr("width", width)
+  .attr("height", height);
 
-    // Create SVG
-    const svg = d3.select("#map")
-        .append("svg")
-        .attr("width", width)
-        .attr("height", height);
+const g = svg.append("g")
+  .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    // Projection
-    const projection = d3.geoAlbersUsa()
-        .translate([width / 2, height / 2])
-        .scale(1000);
+const chartWidth = width - margin.left - margin.right;
+const chartHeight = height - margin.top - margin.bottom;
 
-    const path = d3.geoPath().projection(projection);
-
-    // Load US data
-    const us = await d3.json("https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json");
-
-    // Convert TopoJSON → GeoJSON
-    const states = topojson.feature(us, us.objects.states);
-
-    // Draw states
-    svg.selectAll("path")
-        .data(states.features)
-        .enter()
-        .append("path")
-        .attr("d", path)
-        .attr("fill", "lightgray")
-        .attr("stroke", "white")
-        .on("mouseover", function (event, d) {
-            d3.select(this).attr("fill", "orange");
-        })
-        .on("mouseout", function (event, d) {
-            d3.select(this).attr("fill", "lightgray");
-        });
+// helper: clean money strings like "$2,763,645.82"
+function cleanMoney(str) {
+  if (!str) return 0;
+  return +str.replace(/[$,]/g, "");
 }
 
-const tooltip = d3.select("body")
-  .append("div")
-  .style("position", "absolute")
-  .style("background", "white")
-  .style("padding", "6px 10px")
-  .style("border", "1px solid #ccc")
-  .style("border-radius", "4px")
-  .style("box-shadow", "0 2px 8px rgba(0,0,0,0.1)")
-  .style("display", "none")
-  .style("font-size", "13px");
-
-function parseMoney(value) {
-  if (!value) return 0;
-  return +value.replace(/[^0-9.\-]/g, "");
+// helper: detect category column (your file has it in 9th-ish column)
+function getCategory(d) {
+  return d.Category || d["Category "] || d["Category Breakdown"] || d[8];
 }
 
-async function drawStackedBarChart() {
-  const raw = await d3.csv("data/totals.csv", d => ({
-    category: d.Category ? d.Category.trim() : "",
-    total: parseMoney(d["Total Spent"]),
-    local: parseMoney(d.Local)
-  }));
+d3.csv("categories.csv").then(data => {
 
-  const categories = Array.from(d3.rollup(raw.filter(d => d.category && !isNaN(d.total)), v => ({
-    total: d3.sum(v, d => d.total),
-    local: d3.sum(v, d => d.local)
-  }), d => d.category), ([category, values]) => ({
-    category,
-    total: values.total,
-    local: values.local,
-    nonLocal: Math.max(0, values.total - values.local)
-  })).sort((a, b) => b.total - a.total);
+  let rows = [];
 
-  const keys = ["Local", "NonLocal"];
-  const chartData = categories.map(d => ({
-    category: d.category,
-    Local: d.local,
-    NonLocal: d.nonLocal
-  }));
+  data.forEach(d => {
 
-  const margin = { top: 20, right: 20, bottom: 110, left: 90 };
-  const width = 900 - margin.left - margin.right;
-  const height = 450 - margin.top - margin.bottom;
+    const category = d.Category || d["Category Breakdown"] || d[8];
+    const group = d.Group;
 
-  const svg = d3.select("#bar-chart")
-    .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform", `translate(${margin.left},${margin.top})`);
+    // skip rows without category
+    if (!category || category === "") return;
+
+    const total = cleanMoney(d["TOTALS"] || d["TOTALS "] || d["Totals"]);
+
+    rows.push({
+      category: category.trim(),
+      group: group === "0" ? "Local" : "Not Local",
+      total: total
+    });
+  });
+
+  // aggregate
+  const rolled = d3.rollups(
+    rows,
+    v => d3.sum(v, d => d.total),
+    d => d.category,
+    d => d.group
+  );
+
+  const formatted = rolled.map(([category, values]) => {
+    const obj = { category };
+    values.forEach(([group, total]) => {
+      obj[group] = total;
+    });
+    obj["Local"] = obj["Local"] || 0;
+    obj["Not Local"] = obj["Not Local"] || 0;
+    return obj;
+  });
+
+  const keys = ["Local", "Not Local"];
+
+  const stack = d3.stack().keys(keys);
+  const series = stack(formatted);
 
   const x = d3.scaleBand()
-    .domain(categories.map(d => d.category))
-    .range([0, width])
-    .padding(0.22);
+    .domain(formatted.map(d => d.category))
+    .range([0, chartWidth])
+    .padding(0.2);
 
   const y = d3.scaleLinear()
-    .domain([0, d3.max(categories, d => d.total) || 0])
+    .domain([0, d3.max(formatted, d => d.Local + d["Not Local"])])
     .nice()
-    .range([height, 0]);
+    .range([chartHeight, 0]);
 
   const color = d3.scaleOrdinal()
     .domain(keys)
-    .range(["#ffb6c1", "#800020"]);
+    .range(["darkgreen", "lightgray"]);
 
-  const series = d3.stack().keys(keys)(chartData);
-
-  svg.append("g")
-    .selectAll("g")
+  // bars
+  g.selectAll("g.layer")
     .data(series)
-    .join("g")
+    .enter()
+    .append("g")
     .attr("fill", d => color(d.key))
     .selectAll("rect")
     .data(d => d)
-    .join("rect")
+    .enter()
+    .append("rect")
     .attr("x", d => x(d.data.category))
     .attr("y", d => y(d[1]))
-    .attr("height", d => Math.max(0, y(d[0]) - y(d[1])))
-    .attr("width", x.bandwidth())
-    .on("mouseover", function(event, d) {
-      const key = d3.select(this.parentNode).datum().key;
-      tooltip.style("display", "block")
-        .html(`<strong>${d.data.category}</strong><br>${key}: $${(d.data[key] || 0).toLocaleString()}`);
-    })
-    .on("mousemove", function(event) {
-      tooltip.style("left", event.pageX + 10 + "px")
-        .style("top", event.pageY + 10 + "px");
-    })
-    .on("mouseout", () => tooltip.style("display", "none"));
+    .attr("height", d => y(d[0]) - y(d[1]))
+    .attr("width", x.bandwidth());
 
-  svg.append("g")
-    .attr("transform", `translate(0,${height})`)
+  // x axis
+  g.append("g")
+    .attr("transform", `translate(0,${chartHeight})`)
     .call(d3.axisBottom(x))
     .selectAll("text")
     .attr("transform", "rotate(-45)")
     .style("text-anchor", "end");
 
-  svg.append("g")
-    .call(d3.axisLeft(y).tickFormat(d => `$${d3.format(",")(d)}`));
+  // y axis
+  g.append("g")
+    .call(d3.axisLeft(y));
 
-  svg.append("text")
-    .attr("x", width / 2)
-    .attr("y", height + margin.bottom - 45)
-    .attr("text-anchor", "middle")
-    .attr("fill", "#333")
-    .text("Produce Category");
+  // legend
+  const legend = svg.append("g")
+    .attr("transform", `translate(${width - 170},40)`);
 
-  svg.append("text")
-    .attr("transform", "rotate(-90)")
-    .attr("x", -height / 2)
-    .attr("y", -margin.left + 20)
-    .attr("text-anchor", "middle")
-    .attr("fill", "#333")
-    .text("Total Spent ($)");
+  keys.forEach((k, i) => {
+    const row = legend.append("g")
+      .attr("transform", `translate(0, ${i * 20})`);
 
-  d3.select("#bar-chart")
-    .append("div")
-    .attr("class", "chart-legend")
-    .html(`
-      <span><span class="color-swatch" style="background:#ffb6c1"></span>Local</span>
-      <span><span class="color-swatch" style="background:#800020"></span>Non-Local</span>
-    `);
-}
+    row.append("rect")
+      .attr("width", 15)
+      .attr("height", 15)
+      .attr("fill", color(k));
 
-async function initVisualizations() {
-  drawMap();
-  await drawStackedBarChart();
-}
-
-initVisualizations();
-
-
-
-const data = {
-  nodes: [
-    { name: "Total Budget" },
-    { name: "Non-Local Distributor" },
-    { name: "Local Distributor" },
-    { name: "Local Food" },
-    { name: "Non-Local Food" }
-  ],
-  links: [
-    { source: 0, target: 1, value: 4500000 },
-    { source: 0, target: 2, value: 62000 },
-
-    { source: 1, target: 3, value: 90000 },   
-    { source: 1, target: 4, value: 4400000 },
-
-    { source: 2, target: 3, value: 62000 }
-  ]
-};
-
-// SVG setup
-const width = 800;
-const height = 500;
-
-const svg = d3.select("#sankey")
-  .append("svg")
-  .attr("width", width)
-  .attr("height", height);
-
-// Sankey generator
-const sankey = d3.sankey()
-  .nodeWidth(20)
-  .nodePadding(10)
-  .extent([[1, 1], [width - 1, height - 6]]);
-
-const graph = sankey({
-  nodes: data.nodes.map(d => Object.assign({}, d)),
-  links: data.links.map(d => Object.assign({}, d))
-});
-
-// Draw links
-svg.append("g")
-  .selectAll("path")
-  .data(graph.links)
-  .join("path")
-  .attr("d", d3.sankeyLinkHorizontal())
-  .attr("stroke-width", d => d.width)
-  .attr("stroke", "#999")
-  .attr("fill", "none")
-  .attr("opacity", 0.5);
-
-// Draw nodes
-svg.append("g")
-  .selectAll("rect")
-  .data(graph.nodes)
-  .join("rect")
-  .attr("x", d => d.x0)
-  .attr("y", d => d.y0)
-  .attr("height", d => d.y1 - d.y0)
-  .attr("width", d => d.x1 - d.x0)
-  .attr("fill", "#69b3a2");
-
-// Labels
-svg.append("g")
-  .selectAll("text")
-  .data(graph.nodes)
-  .join("text")
-  .attr("x", d => d.x0 - 6)
-  .attr("y", d => (d.y1 + d.y0) / 2)
-  .attr("dy", "0.35em")
-  .attr("text-anchor", "end")
-  .text(d => d.name);
-
-
-// Update links
-svg.append("g")
-  .selectAll("path")
-  .data(graph.links)
-  .join("path")
-  .attr("d", d3.sankeyLinkHorizontal())
-  .attr("stroke-width", d => d.width)
-  .attr("stroke", d => {
-    if (d.target.name === "Local Food") return "green";
-    if (d.target.name === "Non-Local Food") return "red";
-    return "#999";
-  })
-  .attr("fill", "none")
-  .attr("opacity", 0.5)
-  .on("mouseover", (event, d) => {
-    tooltip.style("display", "block")
-      .html(`$${d.value.toLocaleString()}`);
-  })
-  .on("mousemove", (event) => {
-    tooltip.style("left", event.pageX + 10 + "px")
-      .style("top", event.pageY + 10 + "px");
-  })
-  .on("mouseout", () => {
-    tooltip.style("display", "none");
+    row.append("text")
+      .attr("x", 20)
+      .attr("y", 12)
+      .text(k);
   });
+
+});
