@@ -6,3 +6,46 @@ body {
 #map {
     margin-top: 20px;
 }
+
+
+
+
+
+
+#sankey {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+svg {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+} 
+path {
+  fill: none;
+  stroke-opacity: 0.4;
+  transition: stroke-opacity 0.2s;
+}
+
+path:hover {
+  stroke-opacity: 0.8;
+}
+
+rect {
+  stroke: #333;
+  stroke-width: 1px;
+}
+
+text {
+  font-size: 12px;
+  fill: #333;
+}
+
+h2 {
+  text-align: center;
+  margin-top: 20px;
+  font-weight: 500;
+}
