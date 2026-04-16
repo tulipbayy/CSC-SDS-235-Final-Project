@@ -38,12 +38,138 @@ async function drawMap() {
         });
 }
 
-drawMap();
+const tooltip = d3.select("body")
+  .append("div")
+  .style("position", "absolute")
+  .style("background", "white")
+  .style("padding", "6px 10px")
+  .style("border", "1px solid #ccc")
+  .style("border-radius", "4px")
+  .style("box-shadow", "0 2px 8px rgba(0,0,0,0.1)")
+  .style("display", "none")
+  .style("font-size", "13px");
+
+function parseMoney(value) {
+  if (!value) return 0;
+  return +value.replace(/[^0-9.\-]/g, "");
+}
+
+async function drawStackedBarChart() {
+  const raw = await d3.csv("data/totals.csv", d => ({
+    category: d.Category ? d.Category.trim() : "",
+    total: parseMoney(d["Total Spent"]),
+    local: parseMoney(d.Local)
+  }));
+
+  const categories = Array.from(d3.rollup(raw.filter(d => d.category && !isNaN(d.total)), v => ({
+    total: d3.sum(v, d => d.total),
+    local: d3.sum(v, d => d.local)
+  }), d => d.category), ([category, values]) => ({
+    category,
+    total: values.total,
+    local: values.local,
+    nonLocal: Math.max(0, values.total - values.local)
+  })).sort((a, b) => b.total - a.total);
+
+  const keys = ["Local", "NonLocal"];
+  const chartData = categories.map(d => ({
+    category: d.category,
+    Local: d.local,
+    NonLocal: d.nonLocal
+  }));
+
+  const margin = { top: 20, right: 20, bottom: 110, left: 90 };
+  const width = 900 - margin.left - margin.right;
+  const height = 450 - margin.top - margin.bottom;
+
+  const svg = d3.select("#bar-chart")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+  const x = d3.scaleBand()
+    .domain(categories.map(d => d.category))
+    .range([0, width])
+    .padding(0.22);
+
+  const y = d3.scaleLinear()
+    .domain([0, d3.max(categories, d => d.total) || 0])
+    .nice()
+    .range([height, 0]);
+
+  const color = d3.scaleOrdinal()
+    .domain(keys)
+    .range(["#ffb6c1", "#800020"]);
+
+  const series = d3.stack().keys(keys)(chartData);
+
+  svg.append("g")
+    .selectAll("g")
+    .data(series)
+    .join("g")
+    .attr("fill", d => color(d.key))
+    .selectAll("rect")
+    .data(d => d)
+    .join("rect")
+    .attr("x", d => x(d.data.category))
+    .attr("y", d => y(d[1]))
+    .attr("height", d => Math.max(0, y(d[0]) - y(d[1])))
+    .attr("width", x.bandwidth())
+    .on("mouseover", function(event, d) {
+      const key = d3.select(this.parentNode).datum().key;
+      tooltip.style("display", "block")
+        .html(`<strong>${d.data.category}</strong><br>${key}: $${(d.data[key] || 0).toLocaleString()}`);
+    })
+    .on("mousemove", function(event) {
+      tooltip.style("left", event.pageX + 10 + "px")
+        .style("top", event.pageY + 10 + "px");
+    })
+    .on("mouseout", () => tooltip.style("display", "none"));
+
+  svg.append("g")
+    .attr("transform", `translate(0,${height})`)
+    .call(d3.axisBottom(x))
+    .selectAll("text")
+    .attr("transform", "rotate(-45)")
+    .style("text-anchor", "end");
+
+  svg.append("g")
+    .call(d3.axisLeft(y).tickFormat(d => `$${d3.format(",")(d)}`));
+
+  svg.append("text")
+    .attr("x", width / 2)
+    .attr("y", height + margin.bottom - 45)
+    .attr("text-anchor", "middle")
+    .attr("fill", "#333")
+    .text("Produce Category");
+
+  svg.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("x", -height / 2)
+    .attr("y", -margin.left + 20)
+    .attr("text-anchor", "middle")
+    .attr("fill", "#333")
+    .text("Total Spent ($)");
+
+  d3.select("#bar-chart")
+    .append("div")
+    .attr("class", "chart-legend")
+    .html(`
+      <span><span class="color-swatch" style="background:#ffb6c1"></span>Local</span>
+      <span><span class="color-swatch" style="background:#800020"></span>Non-Local</span>
+    `);
+}
+
+async function initVisualizations() {
+  drawMap();
+  await drawStackedBarChart();
+}
+
+initVisualizations();
 
 
-
-
-///Sankey Vis
 
 const data = {
   nodes: [
@@ -117,15 +243,6 @@ svg.append("g")
   .attr("text-anchor", "end")
   .text(d => d.name);
 
-
-  // Add tooltip div
-const tooltip = d3.select("body")
-  .append("div")
-  .style("position", "absolute")
-  .style("background", "white")
-  .style("padding", "5px")
-  .style("border", "1px solid #ccc")
-  .style("display", "none");
 
 // Update links
 svg.append("g")
