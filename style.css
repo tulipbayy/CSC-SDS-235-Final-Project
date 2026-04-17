@@ -1,25 +1,61 @@
 body {
   font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+  margin: 20px;
 }
 
-.bar {
-  stroke: none;
+/* GEO */
+#chart {
+  margin-bottom: 60px;
 }
 
-.axis text {
+/* SANKEY */
+#sankey {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* SHARED */
+svg {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+path {
+  fill: none;
+  stroke-opacity: 0.4;
+  transition: 0.2s;
+}
+
+path:hover {
+  stroke-opacity: 0.8;
+}
+
+rect {
+  stroke: #333;
+  stroke-width: 1px;
+}
+
+text {
   font-size: 12px;
+  fill: #333;
 }
 
+h2 {
+  text-align: center;
+  margin: 20px 0;
+}
+
+/* TOOLTIP */
 .tooltip {
   position: fixed;
   pointer-events: none;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0,0,0,0.8);
   color: #fff;
   padding: 6px 10px;
   border-radius: 4px;
   font-size: 12px;
-  line-height: 1.4;
   opacity: 0;
-  transition: opacity 0.15s ease;
-  z-index: 99999;
 }
