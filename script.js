@@ -13,61 +13,67 @@ const g = svg.append("g")
 const chartWidth = width - margin.left - margin.right;
 const chartHeight = height - margin.top - margin.bottom;
 
-// helper: clean money strings like "$2,763,645.82"
-function cleanMoney(str) {
-  if (!str) return 0;
-  return +str.replace(/[$,]/g, "");
-}
-
-// helper: detect category column (your file has it in 9th-ish column)
-function getCategory(d) {
-  return d.Category || d["Category "] || d["Category Breakdown"] || d[8];
-}
-
 d3.csv("Categories.csv").then(data => {
 
-  let rows = [];
+  console.log("DATA LOADED:", data);
 
-  data.forEach(d => {
-
-    const category = d.Category || d["Category Breakdown"] || d[8];
-    const group = d.Group;
-
-    // skip rows without category
-    if (!category || category === "") return;
-
-    const total = cleanMoney(d["TOTALS"] || d["TOTALS "] || d["Totals"]);
-
-    rows.push({
-      category: category.trim(),
-      group: group === "0" ? "Local" : "Not Local",
-      total: total
-    });
-  });
-
-  // aggregate
-  const rolled = d3.rollups(
-    rows,
-    v => d3.sum(v, d => d.total),
-    d => d.category,
-    d => d.group
+  // -----------------------------
+  // CLEAN COLUMN LIST
+  // -----------------------------
+  const categories = data.columns.filter(c =>
+    c &&
+    c !== "Group" &&
+    c !== "TOTALS"
   );
 
-  const formatted = rolled.map(([category, values]) => {
-    const obj = { category };
-    values.forEach(([group, total]) => {
-      obj[group] = total;
-    });
-    obj["Local"] = obj["Local"] || 0;
-    obj["Not Local"] = obj["Not Local"] || 0;
-    return obj;
+  // -----------------------------
+  // INIT STORAGE
+  // -----------------------------
+  let result = {};
+
+  categories.forEach(cat => {
+    result[cat] = {
+      category: cat,
+      Local: 0,
+      "Not Local": 0
+    };
   });
 
+  // -----------------------------
+  // BUILD AGGREGATES
+  // -----------------------------
+  data.forEach(d => {
+
+    // skip junk / totals row
+    if (!d.Group || d.Group.toLowerCase().includes("total")) return;
+
+    const groupType = +d.Group === 0 ? "Local" : "Not Local";
+
+    categories.forEach(cat => {
+
+      const val = +d[cat];
+
+      if (isNaN(val)) return;
+
+      result[cat][groupType] += val;
+    });
+  });
+
+  const formatted = Object.values(result);
+
+  console.log("FORMATTED:", formatted);
+
+  // -----------------------------
+  // STACK SETUP
+  // -----------------------------
   const keys = ["Local", "Not Local"];
 
   const stack = d3.stack().keys(keys);
   const series = stack(formatted);
 
+  // -----------------------------
+  // SCALES
+  // -----------------------------
   const x = d3.scaleBand()
     .domain(formatted.map(d => d.category))
     .range([0, chartWidth])
@@ -82,7 +88,9 @@ d3.csv("Categories.csv").then(data => {
     .domain(keys)
     .range(["darkgreen", "lightgray"]);
 
-  // bars
+  // -----------------------------
+  // DRAW BARS
+  // -----------------------------
   g.selectAll("g.layer")
     .data(series)
     .enter()
@@ -97,7 +105,9 @@ d3.csv("Categories.csv").then(data => {
     .attr("height", d => y(d[0]) - y(d[1]))
     .attr("width", x.bandwidth());
 
-  // x axis
+  // -----------------------------
+  // X AXIS
+  // -----------------------------
   g.append("g")
     .attr("transform", `translate(0,${chartHeight})`)
     .call(d3.axisBottom(x))
@@ -105,27 +115,33 @@ d3.csv("Categories.csv").then(data => {
     .attr("transform", "rotate(-45)")
     .style("text-anchor", "end");
 
-  // y axis
+  // -----------------------------
+  // Y AXIS
+  // -----------------------------
   g.append("g")
     .call(d3.axisLeft(y));
 
-  // legend
+  // -----------------------------
+  // LEGEND
+  // -----------------------------
   const legend = svg.append("g")
-    .attr("transform", `translate(${width - 170},40)`);
+    .attr("transform", `translate(${width - 160}, 40)`);
 
   keys.forEach((k, i) => {
     const row = legend.append("g")
       .attr("transform", `translate(0, ${i * 20})`);
 
     row.append("rect")
-      .attr("width", 15)
-      .attr("height", 15)
+      .attr("width", 12)
+      .attr("height", 12)
       .attr("fill", color(k));
 
     row.append("text")
-      .attr("x", 20)
-      .attr("y", 12)
+      .attr("x", 18)
+      .attr("y", 10)
       .text(k);
   });
 
+}).catch(err => {
+  console.error("CSV LOAD ERROR:", err);
 });
