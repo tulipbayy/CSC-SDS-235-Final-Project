@@ -348,6 +348,36 @@ d3.csv("data.csv", d => ({
   .text(d => d.name)
   .style("font-size", "12px")
   .style("fill", "black");
+
+  //tooltip for hover to give more information about the flows
+  const tooltip = d3.select("#tooltip");
+  svg.append("g")
+  .selectAll("path")
+  .data(sankeyLinks)
+  .join("path")
+  .attr("d", d3.sankeyLinkHorizontal())
+  .attr("fill", "none")
+  .attr("stroke", "black")
+  .attr("stroke-width", d => d.width)
+
+  .on("mouseover", (event, d) => {
+    tooltip
+      .style("opacity", 1)
+      .html(`
+        <strong>${d.source.name} → ${d.target.name}</strong><br>
+        $${d.value.toLocaleString()}
+      `);
+  })
+
+  .on("mousemove", (event) => {
+    tooltip
+      .style("left", (event.pageX + 10) + "px")
+      .style("top", (event.pageY + 10) + "px");
+  })
+
+  .on("mouseout", () => {
+    tooltip.style("opacity", 0);
+  });
 });
 
 
