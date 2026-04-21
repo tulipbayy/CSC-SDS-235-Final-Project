@@ -49,3 +49,9 @@ h1 {
   padding: 0 20px;
   line-height: 1.5;
 }
+
+text {
+  font-size: 12px;
+  fill: #333;
+  pointer-events: none;
+}
