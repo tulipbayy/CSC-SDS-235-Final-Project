@@ -1,40 +1,40 @@
-Distributors,Total_Spent,REAL,Sustainable,Local,Fair,Humane,Plant_Based,Category,
-US Foods Inc.,"$2,763,645.82","$301,842.28","$91,153.62","$105,924.15",$453.80,"$154,655.55","$1,075,284.73",,
-Black River Produce,"$1,783,164.80","$488,901.02","$119,328.94","$379,782.59",$532.85,"$21,934.83","$1,507,588.83",,
-"Gordon Food Service, Inc.","$85,364.55","$3,404.98","$3,404.98",$0.00,$0.00,$0.00,"$25,632.93",,
-United Natural Foods Inc.,"$82,587.06","$18,027.31","$13,873.34",$0.00,$141.52,"$4,134.11","$65,399.36",,
-Arnolds Meats,"$224,101.12","$2,485.85",,"$2,485.85",,,"$1,532.60",,
-"Wulf Fish Wholesale, LLC","$170,664.08","$170,664.08","$170,664.08",,,,,Fish,
-Outlook Farm,"$87,405.00","$87,405.00",,"$87,405.00",,,"$87,405.00",Vegetables,
-"Marty's Local, Inc.","$67,998.84","$59,124.35","$5,743.99","$57,729.97",$270.06,$0.00,"$115,202.02",,
-Sun Coffee Roasters,"$66,041.95","$66,041.95",,,"$66,041.95",,"$66,041.95",Coffee and Tea,
-Maple Valley Creamery,"$62,330.70","$62,330.70",,"$62,330.70",,,,Dairy,
-High Lawn Holdings LLC,"$51,998.20","$51,998.20",,"$51,998.20",,,,Milk,
-Esselon Coffee Roasting Co. Inc.,"$43,268.73","$43,268.73",,,"$43,268.73",,"$43,268.73",Coffee and Tea,
-"Duva Distributors, Inc.","$36,737.22",$0.00,,,,,"$36,737.22",Bakery,                                           
-Original Pizza of Boston,"$34,005.20",$0.00,,,,,"$12,781.27",,
-Queen's Greens,"$27,035.37","$27,035.37",,"$27,035.37",,,"$27,035.37",Vegetables,
-Al's Beverage Distributors,"$22,096.03","$3,935.00","$3,935.00",,,,,Liquids,
-North Hadley Sugar Shack,"$22,044.00","$22,044.00",,"$22,044.00",,,"$22,044.00",Sugars,
-Poplar Hill Farm Inc.,"$21,378.50","$21,378.50",,"$21,378.50",,,,Beef,
-"WestSide Foods, Inc.","$19,244.18",$0.00,,,,,,,
-Sidehill Farm,"$16,951.80","$16,951.80","$16,951.80","$16,951.80",,,,Dairy,
-Southern New England Spice Company,"$13,389.65",$0.00,,,,,"$13,389.65",Dry Goods,
-Mycoterra Farm,"$12,789.50","$12,789.50",,"$12,789.50",,,"$12,789.50",Vegetables,
-"Ground Up, LLC","$9,680.00","$9,680.00",,"$9,680.00",,,"$9,680.00",Grains,
-Mapleline Farm LLC,"$8,626.25","$8,626.25",,"$8,626.25",,,,Milk,
-Red Barn Honey Company,"$8,331.60","$8,331.60",,"$8,331.60",,,,Sugars,
-Kitchen Garden Farm,"$7,749.00","$7,749.00","$7,749.00","$7,749.00",,,"$7,749.00",Vegetables,
-"Leader Distribution Systems, Inc","$7,721.16",$0.00,,,,,,Liquids,
-J. Polep Distribution Services,"$7,212.31",$0.00,,,,,,Dry Goods,
-Arcade Snacks,"$6,986.87",$0.00,,,,,"$6,986.87",Dry Goods,
-Polar Beverages,"$6,803.92","$1,476.00","$1,476.00",,,,"$8,530.07",Liquids,
-Red Fire Farm,"$6,432.90","$6,432.90","$6,432.90","$6,432.90",,,"$6,432.90",Vegetables,
-Harney & Sons Tea Corporation,"$5,725.25","$5,725.25",,,"$5,725.25",,"$5,725.25",Coffee and Tea,
-"Heartland Food Products, LLC","$4,891.84",$0.00,,,,,,Dry Goods,
-Winter Moon Roots,"$3,602.40","$3,602.40",,"$3,602.40",,,"$3,602.40",Vegetables,
-Primarque Products Co.Inc.,"$2,211.78",$0.00,,,,,,Bakery,
-North Shore Seafood Co.,$569.37,$569.37,$569.37,,,,,Fish,
-Rita Ragoza,$255.00,$0.00,,,,,,Bakery,
-"BOHO Chocolate, LLC",$97.50,$97.50,,,$97.50,,,Sugars,
+Distributors,Total_Spent,REAL,Sustainable,Local,Fair,Humane,Plant_Based,Category,isLocal
+US Foods Inc.,"$2,763,645.82","$301,842.28","$91,153.62","$105,924.15",$453.80,"$154,655.55","$1,075,284.73",,No
+Black River Produce,"$1,783,164.80","$488,901.02","$119,328.94","$379,782.59",$532.85,"$21,934.83","$1,507,588.83",,No
+"Gordon Food Service, Inc.","$85,364.55","$3,404.98","$3,404.98",$0.00,$0.00,$0.00,"$25,632.93",,No
+United Natural Foods Inc.,"$82,587.06","$18,027.31","$13,873.34",$0.00,$141.52,"$4,134.11","$65,399.36",,No
+Arnolds Meats,"$224,101.12","$2,485.85",,"$2,485.85",,,"$1,532.60",,No
+"Wulf Fish Wholesale, LLC","$170,664.08","$170,664.08","$170,664.08",,,,,Fish,No
+Outlook Farm,"$87,405.00","$87,405.00",,"$87,405.00",,,"$87,405.00",Vegetables,Yes
+"Marty's Local, Inc.","$67,998.84","$59,124.35","$5,743.99","$57,729.97",$270.06,$0.00,"$115,202.02",,No
+Sun Coffee Roasters,"$66,041.95","$66,041.95",,,"$66,041.95",,"$66,041.95",Coffee and Tea,No
+Maple Valley Creamery,"$62,330.70","$62,330.70",,"$62,330.70",,,,Dairy,Yes
+High Lawn Holdings LLC,"$51,998.20","$51,998.20",,"$51,998.20",,,,Milk,Yes
+Esselon Coffee Roasting Co. Inc.,"$43,268.73","$43,268.73",,,"$43,268.73",,"$43,268.73",Coffee and Tea,No
+"Duva Distributors, Inc.","$36,737.22",$0.00,,,,,"$36,737.22",Bakery,No
+Original Pizza of Boston,"$34,005.20",$0.00,,,,,"$12,781.27",,No
+Queen's Greens,"$27,035.37","$27,035.37",,"$27,035.37",,,"$27,035.37",Vegetables,Yes
+Al's Beverage Distributors,"$22,096.03","$3,935.00","$3,935.00",,,,,Liquids,No
+North Hadley Sugar Shack,"$22,044.00","$22,044.00",,"$22,044.00",,,"$22,044.00",Sugars,Yes
+Poplar Hill Farm Inc.,"$21,378.50","$21,378.50",,"$21,378.50",,,,Beef,Yes
+"WestSide Foods, Inc.","$19,244.18",$0.00,,,,,,,No
+Sidehill Farm,"$16,951.80","$16,951.80","$16,951.80","$16,951.80",,,,Dairy,Yes
+Southern New England Spice Company,"$13,389.65",$0.00,,,,,"$13,389.65",Dry Goods,No
+Mycoterra Farm,"$12,789.50","$12,789.50",,"$12,789.50",,,"$12,789.50",Vegetables,Yes
+"Ground Up, LLC","$9,680.00","$9,680.00",,"$9,680.00",,,"$9,680.00",Grains,Yes
+Mapleline Farm LLC,"$8,626.25","$8,626.25",,"$8,626.25",,,,Milk,Yes
+Red Barn Honey Company,"$8,331.60","$8,331.60",,"$8,331.60",,,,Sugars,Yes
+Kitchen Garden Farm,"$7,749.00","$7,749.00","$7,749.00","$7,749.00",,,"$7,749.00",Vegetables,Yes
+"Leader Distribution Systems, Inc","$7,721.16",$0.00,,,,,,Liquids,No
+J. Polep Distribution Services,"$7,212.31",$0.00,,,,,,Dry Goods,No
+Arcade Snacks,"$6,986.87",$0.00,,,,,"$6,986.87",Dry Goods,No
+Polar Beverages,"$6,803.92","$1,476.00","$1,476.00",,,,"$8,530.07",Liquids,No
+Red Fire Farm,"$6,432.90","$6,432.90","$6,432.90","$6,432.90",,,"$6,432.90",Vegetables,Yes
+Harney & Sons Tea Corporation,"$5,725.25","$5,725.25",,,"$5,725.25",,"$5,725.25",Coffee and Tea,No
+"Heartland Food Products, LLC","$4,891.84",$0.00,,,,,,Dry Goods,No
+Winter Moon Roots,"$3,602.40","$3,602.40",,"$3,602.40",,,"$3,602.40",Vegetables,Yes
+Primarque Products Co.Inc.,"$2,211.78",$0.00,,,,,,Bakery,No
+North Shore Seafood Co.,$569.37,$569.37,$569.37,,,,,Fish,No
+Rita Ragoza,$255.00,$0.00,,,,,,Bakery,No
+"BOHO Chocolate, LLC",$97.50,$97.50,,,$97.50,,,Sugars,No
 Total Budget Spent,"$5,801,139.45","$1,511,918.89","$441,283.02","$892,277.78","$116,531.66","$180,724.49","$3,160,839.65",,
