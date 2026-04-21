@@ -337,7 +337,17 @@ d3.csv("data.csv", d => ({
     .attr("fill", "#2596be");
 
   //labels 
-  
+  svg.append("g")
+  .selectAll("text")
+  .data(sankeyNodes)
+  .join("text")
+  .attr("x", d => (d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6)) // left/right side
+  .attr("y", d => (d.y1 + d.y0) / 2) // vertical center of node
+  .attr("dy", "0.35em")
+  .attr("text-anchor", d => (d.x0 < width / 2 ? "start" : "end"))
+  .text(d => d.name)
+  .style("font-size", "12px")
+  .style("fill", "black");
 });
 
 
