@@ -9,13 +9,6 @@ body {
   margin-bottom: 60px;
 }
 
-/* SANKEY */
-#sankey {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 /* SHARED */
 svg {
   background-color: white;
@@ -58,4 +51,9 @@ h2 {
   border-radius: 4px;
   font-size: 12px;
   opacity: 0;
+}
+
+#chart {
+  display: flex;
+  justify-content: center;
 }
