@@ -1,5 +1,5 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   background-color: #f8f9fa;
   margin: 0;
 }
@@ -33,8 +33,10 @@ rect {
 }
 
 text {
-  font-size: 12px;
-  fill: #333;
+  font-size: 14px;
+  font-weight: 500;
+  fill: #1f2937;
+  pointer-events: none;
 }
 
 h1 {
@@ -66,4 +68,12 @@ text {
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.2s;
+}
+
+/*for contrast */
+text {
+  paint-order: stroke;
+  stroke: white;
+  stroke-width: 3px;
+  stroke-linejoin: round;
 }

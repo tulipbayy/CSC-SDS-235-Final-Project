@@ -85,9 +85,10 @@ d3.csv("data.csv", d => ({
   const sankey = d3.sankey()
     .nodeWidth(20)
     .nodePadding(15)
+    .nodeAlign(d3.sankeyJustify)
     .extent([    [margin.left, margin.top],
     [width - margin.right, height - margin.bottom]]);
-      //[1, 1], [width - 1, height - 6]
+
   const { nodes: sankeyNodes, links: sankeyLinks } = sankey(graph);
 
   // LINKS
