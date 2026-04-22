@@ -72,19 +72,22 @@ d3.csv("data.csv", d => ({
 
   console.log("GRAPH:", graph); 
 
-  const width = 950;
-  const height = 700;
+  const width = 1000;
+  const height = 800;
 
   const svg = d3.select("#sankey")
     .append("svg")
     .attr("width", width)
     .attr("height", height);
 
+  const margin = { top: 20, right: 40, bottom: 20, left: 40 };
+
   const sankey = d3.sankey()
     .nodeWidth(20)
-    .nodePadding(10)
-    .extent([[1, 1], [width - 1, height - 6]]);
-
+    .nodePadding(15)
+    .extent([    [margin.left, margin.top],
+    [width - margin.right, height - margin.bottom]]);
+      //[1, 1], [width - 1, height - 6]
   const { nodes: sankeyNodes, links: sankeyLinks } = sankey(graph);
 
   // LINKS
