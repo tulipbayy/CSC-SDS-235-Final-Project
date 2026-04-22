@@ -72,8 +72,8 @@ d3.csv("data.csv", d => ({
 
   console.log("GRAPH:", graph); 
 
-  const width = 900;
-  const height = 600;
+  const width = 950;
+  const height = 700;
 
   const svg = d3.select("#sankey")
     .append("svg")
