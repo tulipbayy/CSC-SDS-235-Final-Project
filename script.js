@@ -56,8 +56,8 @@ function drawGeo() {
 
       const groupType =
         group === "0" || /local/i.test(group) ? "Local" :
-        group === "1" || /not|non/i.test(group) ? "Not Local" :
-        null;
+          group === "1" || /not|non/i.test(group) ? "Not Local" :
+            null;
 
       if (!groupType) return;
 
@@ -104,13 +104,13 @@ function drawGeo() {
       .attr("y", d => y(d[1]))
       .attr("height", d => y(d[0]) - y(d[1]))
       .attr("width", x.bandwidth())
-      .on("mouseover", function(event, d) {
+      .on("mouseover", function (event, d) {
         const key = d3.select(this.parentNode).datum().key;
         const value = d[1] - d[0];
         tooltip.style("opacity", 1)
           .html(`<strong>${d.data.category}</strong><br>${key}: $${value.toLocaleString()}`);
       })
-      .on("mousemove", function(event) {
+      .on("mousemove", function (event) {
         tooltip.style("left", `${event.pageX + 12}px`)
           .style("top", `${event.pageY + 12}px`);
       })
@@ -124,6 +124,30 @@ function drawGeo() {
       .style("text-anchor", "end");
 
     g.append("g").call(d3.axisLeft(y));
+
+
+    // LEGEND (add this here)
+    const legend = svg.append("g")
+      .attr("transform", `translate(${width - 180}, ${margin.top})`);
+
+    const legendItem = legend.selectAll(".legend-item")
+      .data(keys)
+      .enter()
+      .append("g")
+      .attr("class", "legend-item")
+      .attr("transform", (d, i) => `translate(0, ${i * 25})`);
+
+    legendItem.append("rect")
+      .attr("width", 15)
+      .attr("height", 15)
+      .attr("fill", d => color(d));
+
+    legendItem.append("text")
+      .attr("x", 20)
+      .attr("y", 12)
+      .text(d => d)
+      .style("font-size", "12px");
+
   }).catch(err => {
     console.error("drawGeo error:", err);
     d3.select("#chart").append("div").style("color", "#900").text(err.message);
