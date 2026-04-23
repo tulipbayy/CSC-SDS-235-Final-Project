@@ -38,11 +38,23 @@ Identify opportunities to increase local procurement
 Explore sustainability-aligned spending patterns
 # 2. Bar Chart
 
-The bar chart provides a comparative view of spending across different vendor categories, allowing users to:
+The bar chart provides a detailed comparison of dining expenses across food categories, broken down by local vs. non-local sourcing.
 
-Compare total spending by supplier
-Identify major vendors
-Understand distribution imbalance across categories
+Each bar represents a category (e.g., dairy, meat, produce), and is stacked to show the proportion of spending allocated to:
+
+Local suppliers
+Non-local suppliers
+
+This visualization allows users to quickly assess how different categories contribute to overall spending and where local sourcing is more or less prominent.
+
+Key goals:
+
+Compare spending across food categories
+Identify which categories rely heavily on non-local suppliers
+Highlight categories with strong local sourcing
+Support decision-making around shifting procurement toward sustainable options
+
+
 
 # 3. Pie Chart
 
