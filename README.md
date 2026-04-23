@@ -9,6 +9,7 @@ Our system enables users to better understand how dining funds are distributed a
 
 Domain Expert
 
+Becca Malloy 
 CEEDS – Assistant Director of Sustainability
 
 We worked with sustainability-related datasets provided through CEEDS, including dining procurement data and vendor information. The system is designed to support exploration and communication of sustainability impacts in campus dining.
@@ -54,6 +55,10 @@ Understand distribution imbalance across categories
 ###   - Details-on-demand interactions for deeper inspection of categories
 ###    - Consistent visual encoding across views for comparison
 ###    - Clean, modular structure using HTML, CSS, and JavaScript
+
+# Final Takeaways
+
+
 
 
 ### Created by JJ Cham, Nazifa Ahmed, Bayansulu Tulepbayeva, Eva Soboleva
