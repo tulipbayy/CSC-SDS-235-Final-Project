@@ -37,22 +37,19 @@ Key goals:
 Understand distribution of dining funds
 Identify opportunities to increase local procurement
 Explore sustainability-aligned spending patterns
+
 # 2. Bar Chart
 
-The bar chart provides a comparative view of spending across different vendor categories, allowing users to:
-
-Compare total spending by supplier
-Identify major vendors
-Understand distribution imbalance across categories
 
 # 3. Pie Chart
 
 
 
 # Key Features
+
 ###    - Multiple coordinated views (Sankey, bar chart, pie chart)
-###   - Interactive exploration of dining fund allocation
-###   - Details-on-demand interactions for deeper inspection of categories
+###    - Interactive exploration of dining fund allocation
+###    - Details-on-demand interactions for deeper inspection of categories
 ###    - Consistent visual encoding across views for comparison
 ###    - Clean, modular structure using HTML, CSS, and JavaScript
 
