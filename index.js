@@ -98,7 +98,7 @@ d3.csv("data.csv", d => ({
     .join("path")
     .attr("d", d3.sankeyLinkHorizontal())
     .attr("fill", "none")
-    .attr("stroke", "black")
+    .attr("stroke", "grey")
     .attr("stroke-width", d => d.width);
 
   // NODES
@@ -129,8 +129,9 @@ d3.csv("data.csv", d => ({
   .attr("dy", "0.35em")
   .attr("text-anchor", d => (d.x0 < width / 2 ? "start" : "end"))
   .text(d => d.name)
-  .style("font-size", "12px")
-  .style("fill", "black");
+  .style("font-size", "13px")
+  .style("fill", "black")
+  .style("font-weight", "bold");
 
   //tooltip for hover to give more information about the flows
   const tooltip = d3.select("#tooltip");
@@ -140,8 +141,9 @@ d3.csv("data.csv", d => ({
   .join("path")
   .attr("d", d3.sankeyLinkHorizontal())
   .attr("fill", "none")
-  .attr("stroke", "black")
+  .attr("stroke", "#ffffff")
   .attr("stroke-width", d => d.width)
+  .style("font-family", "serif")
 
   .on("mouseover", (event, d) => {
     tooltip

@@ -35,14 +35,16 @@ rect {
 text {
   font-size: 14px;
   font-weight: 500;
-  fill: #1f2937;
+  fill: #000000;
   pointer-events: none;
 }
 
 h1 {
   text-align: center;
+  font-family:Georgia, 'Times New Roman', Times, serif;
   margin-top: 20px;
-  font-weight: 500;
+  font-weight: 700;
+  font-size: 40px;
 }
 
 #description {
@@ -54,7 +56,8 @@ h1 {
 
 text {
   font-size: 12px;
-  fill: #333;
+  fill: #000000;
+  font-weight: 80px;
   pointer-events: none;
 }
 
@@ -70,10 +73,7 @@ text {
   transition: opacity 0.2s;
 }
 
-/*for contrast */
-text {
-  paint-order: stroke;
-  stroke: white;
-  stroke-width: 3px;
-  stroke-linejoin: round;
+h2 {
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-size: 25px;
 }
