@@ -80,7 +80,7 @@ d3.csv("data.csv", d => ({
   const width = 1000;
   const height = 800;
 
-  const svg = d3.select("#sankey")
+  const ssvg = d3.select("#sankey")
     .append("svg")
     .attr("width", width)
     .attr("height", height);
@@ -97,7 +97,7 @@ d3.csv("data.csv", d => ({
   const { nodes: sankeyNodes, links: sankeyLinks } = sankey(graph);
 
   // LINKS
-  svg.append("g")
+  ssvg.append("g")
     .selectAll("path")
     .data(sankeyLinks)
     .join("path")
@@ -107,7 +107,7 @@ d3.csv("data.csv", d => ({
     .attr("stroke-width", d => d.width);
 
   // NODES
-  svg.append("g")
+  ssvg.append("g")
     .selectAll("rect")
     .data(sankeyNodes)
     .join("rect")
@@ -125,7 +125,7 @@ d3.csv("data.csv", d => ({
       });
 
   //labels 
-  svg.append("g")
+  ssvg.append("g")
   .selectAll("text")
   .data(sankeyNodes)
   .join("text")
@@ -140,7 +140,7 @@ d3.csv("data.csv", d => ({
 
   //tooltip for hover to give more information about the flows
   const tooltip = d3.select("#tooltip");
-  svg.append("g")
+  ssvg.append("g")
   .selectAll("path")
   .data(sankeyLinks)
   .join("path")
