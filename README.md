@@ -49,11 +49,11 @@ Understand distribution imbalance across categories
 
 
 # Key Features
-##    - Multiple coordinated views (Sankey, bar chart, pie chart)
-##   - Interactive exploration of dining fund allocation
-##   - Details-on-demand interactions for deeper inspection of categories
-##    - Consistent visual encoding across views for comparison
-##    - Clean, modular structure using HTML, CSS, and JavaScript
+###    - Multiple coordinated views (Sankey, bar chart, pie chart)
+###   - Interactive exploration of dining fund allocation
+###   - Details-on-demand interactions for deeper inspection of categories
+###    - Consistent visual encoding across views for comparison
+###    - Clean, modular structure using HTML, CSS, and JavaScript
 
 
-# Created by JJ Cham, Nazifa Ahmed, Bayansulu Tulepbayeva, Eva Soboleva
+### Created by JJ Cham, Nazifa Ahmed, Bayansulu Tulepbayeva, Eva Soboleva
