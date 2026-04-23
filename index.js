@@ -29,7 +29,8 @@ d3.csv("data.csv", d => ({
     links.push({
       source: getNode("Total Budget"),
       target: getNode(local),
-      value: d.total
+      value: d.total, 
+      distributor: distributor
     });
 
     // Local → Plant / Non-Plant
@@ -37,7 +38,8 @@ d3.csv("data.csv", d => ({
       links.push({
         source: getNode(local),
         target: getNode(plantCat),
-        value: d.plant
+        value: d.plant, 
+        distributor: distributor
       });
     }
 
@@ -45,7 +47,8 @@ d3.csv("data.csv", d => ({
       links.push({
         source: getNode(local),
         target: getNode(nonPlantCat),
-        value: nonPlant
+        value: nonPlant,
+        distributor: distributor
       });
     }
 
@@ -54,7 +57,8 @@ d3.csv("data.csv", d => ({
       links.push({
         source: getNode(plantCat),
         target: getNode(distributor),
-        value: d.plant
+        value: d.plant,
+        distributor: distributor
       });
     }
 
@@ -63,7 +67,8 @@ d3.csv("data.csv", d => ({
       links.push({
         source: getNode(nonPlantCat),
         target: getNode(distributor),
-        value: nonPlant
+        value: nonPlant, 
+        distributor: distributor
       });
     }
   });
@@ -149,6 +154,7 @@ d3.csv("data.csv", d => ({
     tooltip
       .style("opacity", 1)
       .html(`
+        <strong>${d.distributor}</strong><br> 
         <strong>${d.source.name} → ${d.target.name}</strong><br>
         $${d.value.toLocaleString()}
       `);
