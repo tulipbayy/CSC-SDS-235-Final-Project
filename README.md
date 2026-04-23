@@ -1,6 +1,8 @@
-CEEDS Visual Analytics System (CSC/SDS 235 Final Project)
-Overview
+### CEEDS Visual Analytics System (CSC/SDS 235 Final Project)
+# 🌱 CEEDS Visual Analytics Systems
+### Exploring sustainability in Smith College dining through interactive data visualization
 
+Overview
 This project was developed as part of CSC/SDS 235: Visual Analytics at Smith College. We designed and implemented an interactive visual analytics system for the Center for the Environment, Ecological Design, and Sustainability (CEEDS). The goal is to help non-expert users explore sustainability-related data, particularly focusing on dining procurement and spending patterns at Smith College.
 
 Our system enables users to better understand how dining funds are distributed across suppliers and to identify opportunities for increasing support of local and sustainable food systems.
@@ -51,8 +53,8 @@ Category-level distribution of funds
 This gives users a quick summary view of overall spending composition.
 
 Key Features
-Multiple coordinated views (Sankey, bar chart, pie chart)
-Interactive exploration of dining fund allocation
-Details-on-demand interactions for deeper inspection of categories
-Consistent visual encoding across views for comparison
-Clean, modular structure using HTML, CSS, and JavaScript
+    - Multiple coordinated views (Sankey, bar chart, pie chart)
+    - Interactive exploration of dining fund allocation
+    - Details-on-demand interactions for deeper inspection of categories
+    - Consistent visual encoding across views for comparison
+    - Clean, modular structure using HTML, CSS, and JavaScript
