@@ -57,3 +57,38 @@ h2 {
   display: flex;
   justify-content: center;
 }
+.pie-chart-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 40px;
+  align-items: center;
+}
+.pie-chart-card {
+  width: 420px;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  flex-direction: column;
+}
+.pie-chart-card svg {
+  display: block;
+  margin: 0 auto;
+}
+.pie-tooltip {
+  position: fixed;
+  pointer-events: none;
+  background: rgba(0,0,0,0.8);
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  opacity: 0;
+  z-index: 99999;
+}
