@@ -23,7 +23,17 @@ h3 {
 #chart {
   display: flex;
   justify-content: center;
-  margin-bottom: 60px;
+  margin: 0 auto 60px;
+  width: 100%;
+  max-width: 2000px;
+  padding: 0 20px;
+}
+
+#chart svg {
+  width: 100%;
+  max-width: 1700px;
+  height: auto;
+  display: block;
 }
 
 /* =========================
@@ -32,9 +42,14 @@ h3 {
 #sankey {
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin-top: 70px;
+  min-height: 800px;
+  margin-top: 50px;
+}
+
+#sankey svg {
+  width: 100%;
+  max-width: 1400px;
+  height: auto;
 }
 
 #s-title {
@@ -79,14 +94,19 @@ rect {
 }
 
 /* Sankey links */
-path {
+#sankey .sankey-link {
   fill: none;
-  stroke-opacity: 0.4;
-  transition: stroke-opacity 0.2s;
+  stroke: #999;
+  stroke-opacity: 0.5;
 }
 
-path:hover {
+#sankey .sankey-link:hover {
   stroke-opacity: 0.8;
+}
+
+.pie-chart-card svg {
+  display: block;
+  max-width: 100%;
 }
 
 /* =========================

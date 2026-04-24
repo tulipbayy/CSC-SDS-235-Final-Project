@@ -2,57 +2,87 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <title>Smith Food Spending</title>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script><link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <meta charset="utf-8">
+  <title>Smith Food Spending</title>
 
+  <!-- D3 -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <h2 id="s-title">Dining Spending Flow</h2>
-    <div id="s-description">
-    <h2 id = "s-h2">Dining Fund Distribution Analysis</h2>
-    <p class = "sp">
-        This Sankey diagram explores how dining funds are distributed among food suppliers
-        used by Smith College, with a focus on the split between local and non-local vendors.
-    </p>
-    <p class = "sp">
-    The visualization traces the flow of total dining budget spending into local vs. non-local
-    categories, then further breaks it down into plant-based and non-plant-based foods,
-    and finally into individual distributors.
-    </p>
-    <p class = "sp">
-    The goal of this analysis is to better understand how much of the dining budget supports
-    local suppliers and to identify opportunities where Smith College could potentially
-    increase spending with local vendors if aligned with sustainability, freshness, and
-    community impact goals.
-    </p>
-    <h3 id = "s-h3">Research Question</h3>
-    <p class = "sp">
-    How are dining funds distributed between local and non-local suppliers at Smith College,
-    and what opportunities exist to shift spending toward local food systems?
-    </p>
-    <h2>Smith College Food Spending: Local vs Non-Local</h2>
-    <div id="chart"></div>
 
-    <div class="pie-chart-container">
-      <div class="pie-chart-card">
-        <h3>Real vs Not Real Spend</h3>
-        <div id="pie-real"></div>
-    </div>
-        <div class="pie-chart-card">
-        <h3>REAL Breakdown</h3>
-        <div id="pie-real-breakdown"></div>
-        </div>
+  <!-- =========================
+       BAR CHART (FIRST)
+  ========================== -->
+  <h2>Smith College Food Spending: Local vs Non-Local</h2>
+  <div id="chart"></div>
+
+
+  <!-- =========================
+       PIE CHARTS (SECOND)
+  ========================== -->
+  <h2>Spending Breakdown</h2>
+
+  <div class="pie-chart-container">
+    <div class="pie-chart-card">
+      <h3>Real vs Not Real Spend</h3>
+      <div id="pie-real"></div>
     </div>
 
-    <div id="sankey"></div>
-    <tooltip id="tooltip"></tooltip>
+    <div class="pie-chart-card">
+      <h3>REAL Breakdown</h3>
+      <div id="pie-real-breakdown"></div>
+    </div>
+  </div>
 
-    <script src="script.js"></script>
-    <script src="index.js"></script>
+
+  <!-- =========================
+       SANKEY (LAST)
+  ========================== -->
+  <h2 id="s-title">Dining Spending Flow</h2>
+
+  <div id="s-description">
+    <h2 id="s-h2">Dining Fund Distribution Analysis</h2>
+
+    <p class="sp">
+      This Sankey diagram explores how dining funds are distributed among food suppliers
+      used by Smith College, with a focus on the split between local and non-local vendors.
+    </p>
+
+    <p class="sp">
+      The visualization traces the flow of total dining budget spending into local vs. non-local
+      categories, then further breaks it down into plant-based and non-plant-based foods,
+      and finally into individual distributors.
+    </p>
+
+    <p class="sp">
+      The goal of this analysis is to better understand how much of the dining budget supports
+      local suppliers and to identify opportunities where Smith College could potentially
+      increase spending with local vendors if aligned with sustainability, freshness, and
+      community impact goals.
+    </p>
+
+    <h3 id="s-h3">Research Question</h3>
+
+    <p class="sp">
+      How are dining funds distributed between local and non-local suppliers at Smith College,
+      and what opportunities exist to shift spending toward local food systems?
+    </p>
+  </div>
+
+  <div id="sankey"></div>
+
+  <!-- Tooltip FIX -->
+  <div id="tooltip"></div>
+
+  <!-- Scripts -->
+  <script src="script.js"></script>
+  <script src="index.js"></script>
+
 </body>
-
 </html>

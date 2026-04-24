@@ -77,15 +77,17 @@ d3.csv("data.csv", d => ({
 
   console.log("GRAPH:", graph); 
 
-  const width = 1000;
-  const height = 800;
+  const width = 1400;
+  const height = 1000;
 
   const ssvg = d3.select("#sankey")
     .append("svg")
-    .attr("width", width)
-    .attr("height", height);
+    .attr("viewBox", `0 0 ${width} ${height}`)
+    .attr("preserveAspectRatio", "xMidYMid meet")
+    .style("width", "100%")
+    .style("height", "auto");
 
-  const margin = { top: 20, right: 40, bottom: 20, left: 40 };
+  const margin = { top: 20, right: 120, bottom: 20, left: 40 };
 
   const sankey = d3.sankey()
     .nodeWidth(20)
@@ -96,15 +98,36 @@ d3.csv("data.csv", d => ({
 
   const { nodes: sankeyNodes, links: sankeyLinks } = sankey(graph);
 
+  //tooltip for hover to give more information about the flows
+  const tooltip = d3.select("#tooltip");
+
   // LINKS
-  ssvg.append("g")
+  const linkGroup = ssvg.append("g")
     .selectAll("path")
     .data(sankeyLinks)
     .join("path")
-    .attr("d", d3.sankeyLinkHorizontal())
+    .attr("class", "sankey-link")
     .attr("fill", "none")
+    .attr("d", d3.sankeyLinkHorizontal())
     .attr("stroke", "grey")
-    .attr("stroke-width", d => d.width);
+    .attr("stroke-width", d => d.width)
+    .on("mouseover", (event, d) => {
+      tooltip
+        .style("opacity", 1)
+        .html(`
+          <strong>${d.distributor}</strong><br>
+          <strong>${d.source.name} → ${d.target.name}</strong><br>
+          $${d.value.toLocaleString()}
+        `);
+    })
+    .on("mousemove", (event) => {
+      tooltip
+        .style("left", (event.pageX + 10) + "px")
+        .style("top", (event.pageY + 10) + "px");
+    })
+    .on("mouseout", () => {
+      tooltip.style("opacity", 0);
+    });
 
   // NODES
   ssvg.append("g")
@@ -126,47 +149,15 @@ d3.csv("data.csv", d => ({
 
   //labels 
   ssvg.append("g")
-  .selectAll("text")
-  .data(sankeyNodes)
-  .join("text")
-  .attr("x", d => (d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6)) // left/right side
-  .attr("y", d => (d.y1 + d.y0) / 2) // vertical center of node
-  .attr("dy", "0.35em")
-  .attr("text-anchor", d => (d.x0 < width / 2 ? "start" : "end"))
-  .text(d => d.name)
-  .style("font-size", "13px")
-  .style("fill", "black")
-  .style("font-weight", "bold");
-
-  //tooltip for hover to give more information about the flows
-  const tooltip = d3.select("#tooltip");
-  ssvg.append("g")
-  .selectAll("path")
-  .data(sankeyLinks)
-  .join("path")
-  .attr("d", d3.sankeyLinkHorizontal())
-  .attr("fill", "none")
-  .attr("stroke", "#ffffff")
-  .attr("stroke-width", d => d.width)
-  .style("font-family", "serif")
-
-  .on("mouseover", (event, d) => {
-    tooltip
-      .style("opacity", 1)
-      .html(`
-        <strong>${d.distributor}</strong><br> 
-        <strong>${d.source.name} → ${d.target.name}</strong><br>
-        $${d.value.toLocaleString()}
-      `);
-  })
-
-  .on("mousemove", (event) => {
-    tooltip
-      .style("left", (event.pageX + 10) + "px")
-      .style("top", (event.pageY + 10) + "px");
-  })
-
-  .on("mouseout", () => {
-    tooltip.style("opacity", 0);
-  });
+    .selectAll("text")
+    .data(sankeyNodes)
+    .join("text")
+    .attr("x", d => (d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6)) // left/right side
+    .attr("y", d => (d.y1 + d.y0) / 2) // vertical center of node
+    .attr("dy", "0.35em")
+    .attr("text-anchor", d => (d.x0 < width / 2 ? "start" : "end"))
+    .text(d => d.name)
+    .style("font-size", "13px")
+    .style("fill", "black")
+    .style("font-weight", "bold");
 });

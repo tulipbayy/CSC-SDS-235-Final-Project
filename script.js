@@ -5,14 +5,16 @@ function parseNumeric(value) {
 }
 
 function drawGeo() {
-  const width = 950;
-  const height = 550;
-  const margin = { top: 40, right: 30, bottom: 140, left: 80 };
+  const width = 1500;
+  const height = 700;
+  const margin = { top: 40, right: 40, bottom: 160, left: 90 };
 
   const svg = d3.select("#chart")
     .append("svg")
-    .attr("width", width)
-    .attr("height", height);
+    .attr("viewBox", `0 0 ${width} ${height}`)
+    .attr("preserveAspectRatio", "xMidYMid meet")
+    .style("width", "100%")
+    .style("height", "auto");
 
   const g = svg.append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
