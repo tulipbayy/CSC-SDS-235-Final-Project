@@ -20,6 +20,13 @@ function drawGeo() {
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
 
+  // ✅ SINGLE TOOLTIP (no duplicates)
+  const tooltip = d3.select("body")
+    .selectAll(".tooltip")
+    .data([null])
+    .join("div")
+    .attr("class", "tooltip");
+
   d3.text("categories.csv").then(text => {
     const lines = text.split(/\r?\n/).filter(line => line.trim() !== "");
     if (lines.length < 3) throw new Error("categories.csv must have at least 3 rows");
@@ -66,7 +73,7 @@ function drawGeo() {
     });
 
     const formatted = Object.values(result).filter(d => d.Local || d["Not Local"]);
-    if (formatted.length === 0) throw new Error("No valid category values found in categories.csv");
+    if (formatted.length === 0) throw new Error("No valid category values found");
 
     const keys = ["Local", "Not Local"];
     const series = d3.stack().keys(keys)(formatted);
@@ -85,9 +92,9 @@ function drawGeo() {
       .domain(keys)
       .range(["#ffb6c1", "#800020"]);
 
-    const tooltip = d3.select("body").append("div")
-      .attr("class", "tooltip");
-
+    // =========================
+    // BARS
+    // =========================
     const groups = g.selectAll("g.layer")
       .data(series)
       .enter()
@@ -102,18 +109,38 @@ function drawGeo() {
       .attr("y", d => y(d[1]))
       .attr("height", d => y(d[0]) - y(d[1]))
       .attr("width", x.bandwidth())
+
+      // ✅ FIXED HOVER
       .on("mouseover", function (event, d) {
         const key = d3.select(this.parentNode).datum().key;
         const value = d[1] - d[0];
-        tooltip.style("opacity", 1)
-          .html(`<strong>${d.data.category}</strong><br>${key}: $${value.toLocaleString()}`);
-      })
-      .on("mousemove", function (event) {
-        tooltip.style("left", `${event.pageX + 12}px`)
-          .style("top", `${event.pageY + 12}px`);
-      })
-      .on("mouseout", () => tooltip.style("opacity", 0));
 
+        const total = d3.sum(formatted, d => d.Local + d["Not Local"]);
+        const percent = ((value / total) * 100).toFixed(1);
+
+        tooltip
+          .style("opacity", 1)
+          .html(`
+            <strong>${d.data.category}</strong><br>
+            ${key}: $${value.toLocaleString()}<br>
+            ${percent}% of total
+          `);
+      })
+
+      // ✅ CRITICAL: FOLLOW CURSOR
+      .on("mousemove", function (event) {
+        tooltip
+          .style("left", `${event.pageX + 10}px`)
+          .style("top", `${event.pageY + 10}px`);
+      })
+
+      .on("mouseout", () => {
+        tooltip.style("opacity", 0);
+      });
+
+    // =========================
+    // AXES
+    // =========================
     g.append("g")
       .attr("transform", `translate(0,${chartHeight})`)
       .call(d3.axisBottom(x))
@@ -123,6 +150,9 @@ function drawGeo() {
 
     g.append("g").call(d3.axisLeft(y));
 
+    // =========================
+    // LEGEND
+    // =========================
     const legend = svg.append("g")
       .attr("transform", `translate(${width - 180}, ${margin.top})`);
 
@@ -130,7 +160,6 @@ function drawGeo() {
       .data(keys)
       .enter()
       .append("g")
-      .attr("class", "legend-item")
       .attr("transform", (d, i) => `translate(0, ${i * 25})`);
 
     legendItem.append("rect")
@@ -143,9 +172,13 @@ function drawGeo() {
       .attr("y", 12)
       .text(d => d)
       .style("font-size", "12px");
+
   }).catch(err => {
     console.error("drawGeo error:", err);
-    d3.select("#chart").append("div").style("color", "#900").text(err.message);
+    d3.select("#chart")
+      .append("div")
+      .style("color", "#900")
+      .text(err.message);
   });
 }
 
@@ -161,48 +194,88 @@ function drawPieChart(container, data) {
     .append("g")
     .attr("transform", `translate(${width / 2},${height / 2})`);
 
+  const pieGen = d3.pie()
+    .value(d => +d.value)   // 🔥 force numeric here
+    .sort(null);
+
+  const arcs = pieGen(data);
+
+  // ✅ FIX: compute total ONCE from clean data
+  const total = d3.sum(data, d => +d.value);
+
   const color = d3.scaleOrdinal()
     .domain(data.map(d => d.label))
-    .range(["#ffb6c1", "#800020", "#4CAF50", "#2196F3", "#FFC107", "#9C27B0"]);
-
-  const pie = d3.pie()
-    .value(d => d.value)
-    .sort(null);
+    .range(d3.schemeTableau10);
 
   const arc = d3.arc()
     .innerRadius(0)
     .outerRadius(radius);
 
   const tooltip = d3.select("body")
-    .append("div")
+    .selectAll(".pie-tooltip")
+    .data([null])
+    .join("div")
     .attr("class", "pie-tooltip");
 
   svg.selectAll("path")
-    .data(pie(data))
+    .data(arcs)
     .enter()
     .append("path")
     .attr("d", arc)
     .attr("fill", d => color(d.data.label))
     .attr("stroke", "#fff")
-    .attr("stroke-width", 1.5)
+    .attr("stroke-width", 2)
+
     .on("mouseover", function (event, d) {
-      tooltip.style("opacity", 1)
-        .html(`${d.data.label}: ${((d.data.value / d3.sum(data, d => d.value)) * 100).toFixed(1)}%<br>$${d.data.value.toLocaleString()}`);
+      const value = +d.data.value;
+      const percent = total ? ((value / total) * 100).toFixed(1) : 0;
+
+      d3.select(this)
+        .transition()
+        .duration(150)
+        .attr("transform", "scale(1.05)");
+
+      tooltip
+        .style("display", "block")
+        .style("opacity", 1)
+        .html(`
+          <div style="font-weight:700;">${d.data.label}</div>
+          <div>$${value.toLocaleString()}</div>
+          <div>${percent}% of total</div>
+          <div style="font-size:11px; opacity:0.8;">
+            Total: $${total.toLocaleString()}
+          </div>
+        `);
     })
+
     .on("mousemove", function (event) {
-      tooltip.style("left", `${event.pageX + 12}px`)
+      tooltip
+        .style("left", `${event.pageX + 12}px`)
         .style("top", `${event.pageY + 12}px`);
     })
-    .on("mouseout", () => tooltip.style("opacity", 0));
+
+    .on("mouseout", function () {
+      d3.select(this)
+        .transition()
+        .duration(150)
+        .attr("transform", "scale(1)");
+
+      tooltip
+        .style("opacity", 0)
+        .style("display", "none");
+    });
 
   svg.selectAll("text")
-    .data(pie(data))
+    .data(arcs)
     .enter()
     .append("text")
     .attr("transform", d => `translate(${arc.centroid(d)})`)
-    .attr("dy", "0.35em")
     .attr("text-anchor", "middle")
-    .style("font-size", "10px")
+    .style("font-size", "12px")
+    .style("font-weight", "800")
+    .style("fill", "white")
+    .style("stroke", "rgba(0,0,0,0.4)")
+    .style("stroke-width", "2px")
     .text(d => d.data.value > 0 ? d.data.label : "");
 }
 
@@ -210,19 +283,18 @@ function drawPieCharts() {
   const path = "./data_Totals.csv";
 
   d3.csv(path).then(rows => {
-    console.log("Loaded pie data:", rows);
+    console.log("Pie data loaded:", rows);
 
-    // SAFE PARSING (handles "Total Spent" + bad CSVs)
+    const get = (row, key) =>
+      parseFloat(String(row[key] || 0).replace(/[\$,]/g, "")) || 0;
+
     const totals = rows.reduce((acc, row) => {
-      const get = (key) => parseFloat(String(row[key] || 0).replace(/[\$,]/g, "")) || 0;
-
-      acc.total += get("Total Spent");
-      acc.real += get("REAL");
-      acc.sustainable += get("Sustainable");
-      acc.local += get("Local");
-      acc.fair += get("Fair");
-      acc.humane += get("Humane");
-
+      acc.total += get(row, "Total Spent");
+      acc.real += get(row, "REAL");
+      acc.sustainable += get(row, "Sustainable");
+      acc.local += get(row, "Local");
+      acc.fair += get(row, "Fair");
+      acc.humane += get(row, "Humane");
       return acc;
     }, {
       total: 0,
@@ -233,7 +305,7 @@ function drawPieCharts() {
       humane: 0
     });
 
-    console.log("Totals computed:", totals);
+    console.log("Totals:", totals);
 
     const realVsNotReal = [
       { label: "REAL", value: totals.real },
@@ -252,11 +324,10 @@ function drawPieCharts() {
 
   }).catch(err => {
     console.error("Pie chart error:", err);
-    d3.select("#pie-real").text("Pie chart failed to load data");
-    d3.select("#pie-real-breakdown").text("Pie chart failed to load data");
+    d3.select("#pie-real").text("Failed to load pie data");
+    d3.select("#pie-real-breakdown").text("Failed to load pie data");
   });
 }
-
 
 drawGeo();
 drawPieCharts();
