@@ -1,0 +1,99 @@
+/* =========================
+   GLOBAL
+========================= */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+  margin: 20px;
+}
+
+h2 {
+  text-align: center;
+  margin: 20px 0;
+}
+
+h3 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* =========================
+   BAR CHART AREA
+========================= */
+#chart {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 60px;
+}
+
+/* SVG styling */
+svg {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Axes + text */
+text {
+  font-size: 12px;
+  fill: #333;
+}
+
+rect {
+  stroke: #333;
+  stroke-width: 1px;
+}
+
+/* =========================
+   TOOLTIP (BAR CHART)
+========================= */
+.tooltip {
+  position: fixed;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  opacity: 0;
+  z-index: 99999;
+  transition: opacity 0.15s ease;
+}
+
+/* =========================
+   PIE CHART LAYOUT
+========================= */
+.pie-chart-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.pie-chart-card {
+  width: 420px;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* =========================
+   PIE CHART TOOLTIP
+========================= */
+.pie-tooltip {
+  position: fixed;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  opacity: 0;
+  z-index: 99999;
+  transition: opacity 0.15s ease;
+}

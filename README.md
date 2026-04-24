@@ -9,7 +9,6 @@ Our system enables users to better understand how dining funds are distributed a
 
 Domain Expert
 
-Becca Malloy 
 CEEDS – Assistant Director of Sustainability
 
 We worked with sustainability-related datasets provided through CEEDS, including dining procurement data and vendor information. The system is designed to support exploration and communication of sustainability impacts in campus dining.
@@ -37,25 +36,34 @@ Key goals:
 Understand distribution of dining funds
 Identify opportunities to increase local procurement
 Explore sustainability-aligned spending patterns
-
 # 2. Bar Chart
 
+The bar chart provides a detailed comparison of dining expenses across food categories, broken down by local vs. non-local sourcing.
+
+Each bar represents a category (e.g., dairy, meat, produce), and is stacked to show the proportion of spending allocated to:
+
+Local suppliers
+Non-local suppliers
+
+This visualization allows users to quickly assess how different categories contribute to overall spending and where local sourcing is more or less prominent.
+
+Key goals:
+
+Compare spending across food categories
+Identify which categories rely heavily on non-local suppliers
+Highlight categories with strong local sourcing
+Support decision-making around shifting procurement toward sustainable options
 
 # 3. Pie Chart
 
 
 
 # Key Features
-
 ###    - Multiple coordinated views (Sankey, bar chart, pie chart)
-###    - Interactive exploration of dining fund allocation
-###    - Details-on-demand interactions for deeper inspection of categories
+###   - Interactive exploration of dining fund allocation
+###   - Details-on-demand interactions for deeper inspection of categories
 ###    - Consistent visual encoding across views for comparison
 ###    - Clean, modular structure using HTML, CSS, and JavaScript
-
-# Final Takeaways
-
-
 
 
 ### Created by JJ Cham, Nazifa Ahmed, Bayansulu Tulepbayeva, Eva Soboleva
