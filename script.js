@@ -1,6 +1,6 @@
 function parseNumeric(value) {
   if (value == null) return NaN;
-  const cleaned = String(value).replace(/[\$,]/g, "").trim();
+  const cleaned = String(value).replace(/[\$,\s\(\)\-]/g, "").trim();
   return cleaned === "" ? NaN : +cleaned;
 }
 
@@ -195,12 +195,12 @@ function drawPieChart(container, data) {
     .attr("transform", `translate(${width / 2},${height / 2})`);
 
   const pieGen = d3.pie()
-    .value(d => +d.value)   // 🔥 force numeric here
+    .value(d => +d.value)   // force numeric here
     .sort(null);
 
   const arcs = pieGen(data);
 
-  // ✅ FIX: compute total ONCE from clean data
+  //  FIX: compute total ONCE from clean data
   const total = d3.sum(data, d => +d.value);
 
   const color = d3.scaleOrdinal()
@@ -217,6 +217,8 @@ function drawPieChart(container, data) {
     .join("div")
     .attr("class", "pie-tooltip");
 
+  let hideTimeout;
+
   svg.selectAll("path")
     .data(arcs)
     .enter()
@@ -227,8 +229,12 @@ function drawPieChart(container, data) {
     .attr("stroke-width", 2)
 
     .on("mouseover", function (event, d) {
+      if (hideTimeout) clearTimeout(hideTimeout);
+
       const value = +d.data.value;
       const percent = total ? ((value / total) * 100).toFixed(1) : 0;
+
+      console.log(`Pie hover: ${d.data.label}, value: ${value}, percent: ${percent}, total: ${total}`);  // ✅ DEBUG
 
       d3.select(this)
         .transition()
@@ -236,8 +242,9 @@ function drawPieChart(container, data) {
         .attr("transform", "scale(1.05)");
 
       tooltip
-        .style("display", "block")
         .style("opacity", 1)
+        .style("left", `${event.pageX + 10}px`)
+        .style("top", `${event.pageY + 10}px`)
         .html(`
           <div style="font-weight:700;">${d.data.label}</div>
           <div>$${value.toLocaleString()}</div>
@@ -260,9 +267,9 @@ function drawPieChart(container, data) {
         .duration(150)
         .attr("transform", "scale(1)");
 
-      tooltip
-        .style("opacity", 0)
-        .style("display", "none");
+      hideTimeout = setTimeout(() => {
+        tooltip.style("opacity", 0);
+      }, 300);  // Delay hide by 300ms
     });
 
   svg.selectAll("text")

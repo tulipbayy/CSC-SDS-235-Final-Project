@@ -54,8 +54,6 @@ Identify which categories rely heavily on non-local suppliers
 Highlight categories with strong local sourcing
 Support decision-making around shifting procurement toward sustainable options
 
-
-
 # 3. Pie Chart
 
 
