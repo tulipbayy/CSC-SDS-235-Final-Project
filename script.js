@@ -54,8 +54,8 @@ function drawGeo() {
 
       const groupType =
         group === "0" || /local/i.test(group) ? "Local" :
-        group === "1" || /not|non/i.test(group) ? "Not Local" :
-        null;
+          group === "1" || /not|non/i.test(group) ? "Not Local" :
+            null;
 
       if (!groupType) return;
 
@@ -209,40 +209,54 @@ function drawPieChart(container, data) {
 function drawPieCharts() {
   const path = "./data_Totals.csv";
 
-  d3.csv(path)
-    .then(rows => {
-      console.log("Loaded", path, rows);
-      const totals = rows.reduce((acc, row) => {
-        acc.total += parseNumeric(row["Total_Spent"]);
-        acc.real += parseNumeric(row.REAL);
-        acc.sustainable += parseNumeric(row.Sustainable);
-        acc.local += parseNumeric(row.Local);
-        acc.fair += parseNumeric(row.Fair);
-        acc.humane += parseNumeric(row.Humane);
-        return acc;
-      }, { total: 0, real: 0, sustainable: 0, local: 0, fair: 0, humane: 0 });
+  d3.csv(path).then(rows => {
+    console.log("Loaded pie data:", rows);
 
-      const realVsNotReal = [
-        { label: "REAL", value: totals.real },
-        { label: "Not REAL", value: Math.max(totals.total - totals.real, 0) }
-      ];
+    // SAFE PARSING (handles "Total Spent" + bad CSVs)
+    const totals = rows.reduce((acc, row) => {
+      const get = (key) => parseFloat(String(row[key] || 0).replace(/[\$,]/g, "")) || 0;
 
-      const realBreakdown = [
-        { label: "Sustainable", value: totals.sustainable },
-        { label: "Local", value: totals.local },
-        { label: "Fair", value: totals.fair },
-        { label: "Humane", value: totals.humane }
-      ];
+      acc.total += get("Total Spent");
+      acc.real += get("REAL");
+      acc.sustainable += get("Sustainable");
+      acc.local += get("Local");
+      acc.fair += get("Fair");
+      acc.humane += get("Humane");
 
-      drawPieChart("#pie-real", realVsNotReal);
-      drawPieChart("#pie-real-breakdown", realBreakdown);
-    })
-    .catch(err => {
-      console.error(`Error loading ${path}:`, err);
-      d3.select("#pie-real").text(`Unable to load ${path}`);
-      d3.select("#pie-real-breakdown").text(`Unable to load ${path}`);
+      return acc;
+    }, {
+      total: 0,
+      real: 0,
+      sustainable: 0,
+      local: 0,
+      fair: 0,
+      humane: 0
     });
+
+    console.log("Totals computed:", totals);
+
+    const realVsNotReal = [
+      { label: "REAL", value: totals.real },
+      { label: "Not REAL", value: Math.max(totals.total - totals.real, 0) }
+    ];
+
+    const realBreakdown = [
+      { label: "Sustainable", value: totals.sustainable },
+      { label: "Local", value: totals.local },
+      { label: "Fair", value: totals.fair },
+      { label: "Humane", value: totals.humane }
+    ];
+
+    drawPieChart("#pie-real", realVsNotReal);
+    drawPieChart("#pie-real-breakdown", realBreakdown);
+
+  }).catch(err => {
+    console.error("Pie chart error:", err);
+    d3.select("#pie-real").text("Pie chart failed to load data");
+    d3.select("#pie-real-breakdown").text("Pie chart failed to load data");
+  });
 }
+
 
 drawGeo();
 drawPieCharts();

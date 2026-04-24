@@ -4,26 +4,26 @@ body {
   margin: 20px;
 }
 
-/* GEO */
+/* =========================
+   BAR CHART AREA
+========================= */
 #chart {
+  display: flex;
+  justify-content: center;
   margin-bottom: 60px;
 }
 
-/* SHARED */
+/* SVG styling (shared) */
 svg {
   background-color: white;
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-path {
-  fill: none;
-  stroke-opacity: 0.4;
-  transition: 0.2s;
-}
-
-path:hover {
-  stroke-opacity: 0.8;
+/* Axes + text */
+text {
+  font-size: 12px;
+  fill: #333;
 }
 
 rect {
@@ -31,64 +31,70 @@ rect {
   stroke-width: 1px;
 }
 
-text {
-  font-size: 12px;
-  fill: #333;
-}
-
-h2 {
-  text-align: center;
-  margin: 20px 0;
-}
-
-/* TOOLTIP */
+/* =========================
+   TOOLTIP (BAR CHART)
+========================= */
 .tooltip {
   position: fixed;
   pointer-events: none;
-  background: rgba(0,0,0,0.8);
+  background: rgba(0, 0, 0, 0.8);
   color: #fff;
   padding: 6px 10px;
   border-radius: 4px;
   font-size: 12px;
   opacity: 0;
+  z-index: 9999;
+  transition: opacity 0.15s ease;
 }
 
-#chart {
-  display: flex;
-  justify-content: center;
-}
+/* =========================
+   PIE CHART LAYOUT
+========================= */
 .pie-chart-container {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
   justify-content: center;
   margin-top: 40px;
-  align-items: center;
 }
+
 .pie-chart-card {
   width: 420px;
   padding: 20px;
   background: white;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto;
   flex-direction: column;
+  align-items: center;
 }
-.pie-chart-card svg {
-  display: block;
-  margin: 0 auto;
-}
+
+/* =========================
+   PIE CHART TOOLTIP
+========================= */
 .pie-tooltip {
   position: fixed;
   pointer-events: none;
-  background: rgba(0,0,0,0.8);
+  background: rgba(0, 0, 0, 0.85);
   color: #fff;
   padding: 8px 10px;
   border-radius: 4px;
   font-size: 12px;
   opacity: 0;
+  display: none;
   z-index: 99999;
+  transition: opacity 0.15s ease;
+}
+
+/* =========================
+   TITLE
+========================= */
+h2 {
+  text-align: center;
+  margin: 20px 0;
+}
+
+h3 {
+  text-align: center;
+  margin-bottom: 10px;
 }
