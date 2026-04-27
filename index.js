@@ -87,7 +87,7 @@ d3.csv("data.csv", d => ({
     .style("width", "100%")
     .style("height", "auto");
 
-  const margin = { top: 20, right: 120, bottom: 20, left: 40 };
+  const margin = { top: 60, right: 120, bottom: 20, left: 40 };
 
   const sankey = d3.sankey()
     .nodeWidth(20)
@@ -160,4 +160,16 @@ d3.csv("data.csv", d => ({
     .style("font-size", "13px")
     .style("fill", "black")
     .style("font-weight", "bold");
+
+  //Sankey Title: Breakdown of Dining Expenditures at Smith College  
+  ssvg.append("text")
+  .attr("x", width / 2)
+  .attr("y", 30) // adjust if needed
+  .attr("text-anchor", "middle")
+  .style("font-size", "26px")
+  .style("font-weight", "bold")
+  .style("fill", "black")
+  .text("Breakdown of Dining Expenditures at Smith College");
+      
+  
 });

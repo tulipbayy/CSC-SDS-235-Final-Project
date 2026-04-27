@@ -22,7 +22,7 @@ function drawGeo() {
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
 
-  // ✅ SINGLE TOOLTIP (no duplicates)
+  // SINGLE TOOLTIP (no duplicates)
   const tooltip = d3.select("body")
     .selectAll(".tooltip")
     .data([null])
@@ -94,9 +94,8 @@ function drawGeo() {
       .domain(keys)
       .range(["#ffb6c1", "#800020"]);
 
-    // =========================
     // BARS
-    // =========================
+
     const groups = g.selectAll("g.layer")
       .data(series)
       .enter()
@@ -112,7 +111,7 @@ function drawGeo() {
       .attr("height", d => y(d[0]) - y(d[1]))
       .attr("width", x.bandwidth())
 
-      // ✅ FIXED HOVER
+      // FIXED HOVER
       .on("mouseover", function (event, d) {
         const key = d3.select(this.parentNode).datum().key;
         const value = d[1] - d[0];
@@ -129,7 +128,7 @@ function drawGeo() {
           `);
       })
 
-      // ✅ CRITICAL: FOLLOW CURSOR
+      // FOLLOW CURSOR
       .on("mousemove", function (event) {
         tooltip
           .style("left", `${event.pageX + 10}px`)
@@ -151,6 +150,26 @@ function drawGeo() {
       .style("text-anchor", "end");
 
     g.append("g").call(d3.axisLeft(y));
+
+    //axis titles 
+    // X-axis title
+    g.append("text")
+      .attr("x", chartWidth / 2)
+      .attr("y", chartHeight + 120) // push below rotated labels
+      .attr("text-anchor", "middle")
+      .style("font-size", "14px")
+      .style("font-weight", "bold")
+      .text("Food Categories");
+
+    // Y-axis title
+    g.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("x", -chartHeight / 2)
+      .attr("y", -60) // distance from axis
+      .attr("text-anchor", "middle")
+      .style("font-size", "14px")
+      .style("font-weight", "bold")
+      .text("Total Spent");
 
     // =========================
     // LEGEND
@@ -202,7 +221,7 @@ function drawPieChart(container, data) {
 
   const arcs = pieGen(data);
 
-  //  FIX: compute total ONCE from clean data
+  //  compute total ONCE from clean data
   const total = d3.sum(data, d => +d.value);
 
   const color = d3.scaleOrdinal()
