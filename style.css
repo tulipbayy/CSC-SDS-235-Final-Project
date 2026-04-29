@@ -158,7 +158,10 @@ rect {
 .pie-chart-container {
   display: flex;
   justify-content: center;
+  gap: 30px;
   margin-top: 40px;
+  flex-wrap: wrap;
+  /* prevents squishing on smaller screens */
 }
 
 .pie-chart-card {
@@ -178,6 +181,30 @@ rect {
   display: block;
   max-width: 100%;
   height: auto;
+}
+
+.chart-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+}
+
+/* controls row (dropdown area) */
+.chart-controls {
+  display: flex;
+  justify-content: center;
+  margin: 15px 0 20px 0;
+}
+
+/* dropdown styling (clean + consistent) */
+#pie-selector {
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
 }
 
 /* =========================
@@ -222,4 +249,9 @@ rect {
   font-size: 14px;
   color: #555;
   margin-top: 40px;
+}
+
+#card-real,
+#card-breakdown {
+  display: flex;
 }
