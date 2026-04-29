@@ -10,7 +10,7 @@ const pieTooltip = d3.select("body")
   .style("opacity", 0);
 
 function drawGeo() {
-  const width = 1500;
+  const width = 1100;
   const height = 800;
 
   // ✅ FIXED MARGINS (prevents clipping)
