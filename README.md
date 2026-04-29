@@ -77,7 +77,7 @@ For more information on the REAL Challenge view the RFC Guide by download the pd
  - Open index.html with live server to view all three visualizations
 
 # Known Bugs 
- - The hover tooltip in the pie chart doesn't display the percentages as it should 
+ - None as of 4/28/26
 
 # Data Cleaning/Analysis
 All of the visualizations were created using csv datasheets from CEEDS. We cleaned the totals spreadsheet by ensuring columns representing dollar amounts were parsed in as integers and added an isLocal boolean column. We also added 0 values to all cells that were blank for consistency. 
