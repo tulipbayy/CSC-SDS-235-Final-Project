@@ -4,6 +4,11 @@ function parseNumeric(value) {
   return cleaned === "" ? NaN : +cleaned;
 }
 
+const pieTooltip = d3.select("body")
+  .append("div")
+  .attr("class", "pie-tooltip")
+  .style("opacity", 0);
+
 function drawGeo() {
   const width = 950;
   const height = 550;
@@ -195,12 +200,12 @@ function drawPieChart(container, data) {
     .attr("transform", `translate(${width / 2},${height / 2})`);
 
   const pieGen = d3.pie()
-    .value(d => +d.value)   // force numeric here
+    .value(d => +d.value)
     .sort(null);
 
   const arcs = pieGen(data);
 
-  //  FIX: compute total ONCE from clean data
+  // ✅ total computed once
   const total = d3.sum(data, d => +d.value);
 
   const color = d3.scaleOrdinal()
@@ -211,14 +216,6 @@ function drawPieChart(container, data) {
     .innerRadius(0)
     .outerRadius(radius);
 
-  const tooltip = d3.select("body")
-    .selectAll(".pie-tooltip")
-    .data([null])
-    .join("div")
-    .attr("class", "pie-tooltip");
-
-  let hideTimeout;
-
   svg.selectAll("path")
     .data(arcs)
     .enter()
@@ -228,53 +225,61 @@ function drawPieChart(container, data) {
     .attr("stroke", "#fff")
     .attr("stroke-width", 2)
 
+    // =========================
+    // ✅ HOVER START
+    // =========================
     .on("mouseover", function (event, d) {
-      if (hideTimeout) clearTimeout(hideTimeout);
 
       const value = +d.data.value;
       const percent = total ? ((value / total) * 100).toFixed(1) : 0;
 
-      console.log(`Pie hover: ${d.data.label}, value: ${value}, percent: ${percent}, total: ${total}`);
+      console.log(`Pie hover: ${d.data.label}, value: ${value}, percent: ${percent}`);
 
-      // 🔥 Pop-out animation
+      // 🔥 pop-out animation
       d3.select(this)
         .transition()
         .duration(150)
         .attr("transform", "scale(1.05)");
 
-      // 🔥 (optional but fine to keep)
-      const [x, y] = d3.pointer(event);
-
-      // ✅ FIXED tooltip positioning
-      tooltip
+      // ✅ SHOW TOOLTIP
+      pieTooltip
         .style("opacity", 1)
         .style("left", `${event.clientX + 12}px`)
         .style("top", `${event.clientY + 12}px`)
         .html(`
-      <div style="font-weight:700;">${d.data.label}</div>
-      <div>$${value.toLocaleString()}</div>
-      <div>${percent}% of total</div>
-      <div style="font-size:11px; opacity:0.8;">
-        Total: $${total.toLocaleString()}
-      </div>
-    `);
+          <div style="font-weight:700;">${d.data.label}</div>
+          <div>$${value.toLocaleString()}</div>
+          <div>${percent}% of total</div>
+          <div style="font-size:11px; opacity:0.8;">
+            Total: $${total.toLocaleString()}
+          </div>
+        `);
     })
 
+    // =========================
+    // ✅ FOLLOW CURSOR
+    // =========================
     .on("mousemove", function (event) {
-      tooltip
-        .style("left", `${event.pageX + 12}px`)
-        .style("top", `${event.pageY + 12}px`);
+      pieTooltip
+        .style("left", `${event.clientX + 12}px`)
+        .style("top", `${event.clientY + 12}px`);
     })
 
+    // =========================
+    // ✅ HOVER OUT
+    // =========================
     .on("mouseout", function () {
       d3.select(this)
         .transition()
         .duration(150)
         .attr("transform", "scale(1)");
 
-      tooltip.style("opacity", 0);
-    })
+      pieTooltip.style("opacity", 0);
+    });
 
+  // =========================
+  // LABELS INSIDE PIE
+  // =========================
   svg.selectAll("text")
     .data(arcs)
     .enter()
@@ -294,8 +299,12 @@ function drawPieCharts() {
 
   d3.csv(path).then(rows => {
 
-    const get = (row, key) =>
-      parseFloat(String(row[key] || 0).replace(/[\$,]/g, "")) || 0;
+    const get = (row, key) => {
+      const val = row[key];
+      if (!val) return 0;
+      const num = parseFloat(String(val).replace(/[^0-9.-]/g, ""));
+      return isNaN(num) ? 0 : num;
+    };
 
     const totals = rows.reduce((acc, row) => {
       acc.total += get(row, "Total Spent");
@@ -326,7 +335,7 @@ function drawPieCharts() {
       { label: "Humane", value: totals.humane }
     ];
 
-    // Draw BOTH charts directly into correct divs
+    // ✅ draw both charts
     drawPieChart("#pie-real", realVsNotReal);
     drawPieChart("#pie-real-breakdown", realBreakdown);
 
