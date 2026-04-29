@@ -5,7 +5,8 @@
     <meta charset="utf-8">
     <title>Smith Food Spending</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script><link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -14,13 +15,17 @@
     <div id="chart"></div>
 
     <div class="pie-chart-container">
-      <div class="pie-chart-card">
-        <h3>Real vs Not Real Spend</h3>
-        <div id="pie-real"></div>
-    </div>
         <div class="pie-chart-card">
-        <h3>REAL Breakdown</h3>
-        <div id="pie-real-breakdown"></div>
+            <h3 id="pie-title">Real vs Not Real Spend</h3>
+
+            <!-- selector -->
+            <select id="pie-selector">
+                <option value="real">Real vs Not Real</option>
+                <option value="breakdown">REAL Breakdown</option>
+            </select>
+
+            <!-- ONE container only -->
+            <div id="pie-chart"></div>
         </div>
     </div>
     <tooltip id="tooltip"></tooltip>

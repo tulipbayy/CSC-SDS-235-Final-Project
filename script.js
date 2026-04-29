@@ -290,7 +290,6 @@ function drawPieCharts() {
   const path = "./data_Totals.csv";
 
   d3.csv(path).then(rows => {
-    console.log("Pie data loaded:", rows);
 
     const get = (row, key) =>
       parseFloat(String(row[key] || 0).replace(/[\$,]/g, "")) || 0;
@@ -312,8 +311,6 @@ function drawPieCharts() {
       humane: 0
     });
 
-    console.log("Totals:", totals);
-
     const realVsNotReal = [
       { label: "REAL", value: totals.real },
       { label: "Not REAL", value: Math.max(totals.total - totals.real, 0) }
@@ -326,13 +323,33 @@ function drawPieCharts() {
       { label: "Humane", value: totals.humane }
     ];
 
-    drawPieChart("#pie-real", realVsNotReal);
-    drawPieChart("#pie-real-breakdown", realBreakdown);
+    const selector = d3.select("#pie-selector");
+    const container = d3.select("#pie-chart");
+    const title = d3.select("#pie-title");
+
+    function updateChart(type) {
+      container.selectAll("*").remove(); // clear old chart
+
+      if (type === "real") {
+        title.text("Real vs Not Real Spend");
+        drawPieChart("#pie-chart", realVsNotReal);
+      } else {
+        title.text("REAL Breakdown");
+        drawPieChart("#pie-chart", realBreakdown);
+      }
+    }
+
+    // initial render
+    updateChart("real");
+
+    // on change
+    selector.on("change", function () {
+      updateChart(this.value);
+    });
 
   }).catch(err => {
     console.error("Pie chart error:", err);
-    d3.select("#pie-real").text("Failed to load pie data");
-    d3.select("#pie-real-breakdown").text("Failed to load pie data");
+    d3.select("#pie-chart").text("Failed to load pie data");
   });
 }
 
