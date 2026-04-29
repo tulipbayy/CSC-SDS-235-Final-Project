@@ -5,16 +5,14 @@ function parseNumeric(value) {
 }
 
 function drawGeo() {
-  const width = 1500;
-  const height = 700;
-  const margin = { top: 40, right: 40, bottom: 160, left: 90 };
+  const width = 950;
+  const height = 550;
+  const margin = { top: 40, right: 30, bottom: 140, left: 80 };
 
   const svg = d3.select("#chart")
     .append("svg")
-    .attr("viewBox", `0 0 ${width} ${height}`)
-    .attr("preserveAspectRatio", "xMidYMid meet")
-    .style("width", "100%")
-    .style("height", "auto");
+    .attr("width", width)
+    .attr("height", height);
 
   const g = svg.append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
@@ -94,8 +92,9 @@ function drawGeo() {
       .domain(keys)
       .range(["#ffb6c1", "#800020"]);
 
+    // =========================
     // BARS
-
+    // =========================
     const groups = g.selectAll("g.layer")
       .data(series)
       .enter()
@@ -111,7 +110,7 @@ function drawGeo() {
       .attr("height", d => y(d[0]) - y(d[1]))
       .attr("width", x.bandwidth())
 
-      // FIXED HOVER
+      // ✅ FIXED HOVER
       .on("mouseover", function (event, d) {
         const key = d3.select(this.parentNode).datum().key;
         const value = d[1] - d[0];
@@ -128,7 +127,7 @@ function drawGeo() {
           `);
       })
 
-      // FOLLOW CURSOR
+      // CRITICAL: FOLLOW CURSOR
       .on("mousemove", function (event) {
         tooltip
           .style("left", `${event.pageX + 10}px`)
@@ -150,26 +149,6 @@ function drawGeo() {
       .style("text-anchor", "end");
 
     g.append("g").call(d3.axisLeft(y));
-
-    //axis titles 
-    // X-axis title
-    g.append("text")
-      .attr("x", chartWidth / 2)
-      .attr("y", chartHeight + 120) // push below rotated labels
-      .attr("text-anchor", "middle")
-      .style("font-size", "14px")
-      .style("font-weight", "bold")
-      .text("Food Categories");
-
-    // Y-axis title
-    g.append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("x", -chartHeight / 2)
-      .attr("y", -60) // distance from axis
-      .attr("text-anchor", "middle")
-      .style("font-size", "14px")
-      .style("font-weight", "bold")
-      .text("Total Spent");
 
     // =========================
     // LEGEND
@@ -221,7 +200,7 @@ function drawPieChart(container, data) {
 
   const arcs = pieGen(data);
 
-  //  compute total ONCE from clean data
+  //  FIX: compute total ONCE from clean data
   const total = d3.sum(data, d => +d.value);
 
   const color = d3.scaleOrdinal()
@@ -311,7 +290,6 @@ function drawPieCharts() {
   const path = "./data_Totals.csv";
 
   d3.csv(path).then(rows => {
-    console.log("Pie data loaded:", rows);
 
     const get = (row, key) =>
       parseFloat(String(row[key] || 0).replace(/[\$,]/g, "")) || 0;
@@ -333,8 +311,6 @@ function drawPieCharts() {
       humane: 0
     });
 
-    console.log("Totals:", totals);
-
     const realVsNotReal = [
       { label: "REAL", value: totals.real },
       { label: "Not REAL", value: Math.max(totals.total - totals.real, 0) }
@@ -347,13 +323,33 @@ function drawPieCharts() {
       { label: "Humane", value: totals.humane }
     ];
 
-    drawPieChart("#pie-real", realVsNotReal);
-    drawPieChart("#pie-real-breakdown", realBreakdown);
+    const selector = d3.select("#pie-selector");
+    const container = d3.select("#pie-chart");
+    const title = d3.select("#pie-title");
+
+    function updateChart(type) {
+      container.selectAll("*").remove(); // clear old chart
+
+      if (type === "real") {
+        title.text("Real vs Not Real Spend");
+        drawPieChart("#pie-chart", realVsNotReal);
+      } else {
+        title.text("REAL Breakdown");
+        drawPieChart("#pie-chart", realBreakdown);
+      }
+    }
+
+    // initial render
+    updateChart("real");
+
+    // on change
+    selector.on("change", function () {
+      updateChart(this.value);
+    });
 
   }).catch(err => {
     console.error("Pie chart error:", err);
-    d3.select("#pie-real").text("Failed to load pie data");
-    d3.select("#pie-real-breakdown").text("Failed to load pie data");
+    d3.select("#pie-chart").text("Failed to load pie data");
   });
 }
 
