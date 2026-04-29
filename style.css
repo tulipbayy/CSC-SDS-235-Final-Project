@@ -185,17 +185,21 @@ rect {
 ========================= */
 
 .pie-tooltip {
+  min-width: 120px;
+  text-align: left;
   position: fixed;
   pointer-events: none;
-  /* IMPORTANT: prevents hover glitches */
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.9);
   color: #fff;
-  padding: 8px 10px;
-  border-radius: 4px;
+  padding: 10px 12px;
+  border-radius: 6px;
   font-size: 12px;
+
   opacity: 0;
-  z-index: 99999;
-  transition: opacity 0.15s ease;
+  z-index: 999999;
+  /* 🔥 increase this */
+
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 /* =========================

@@ -115,23 +115,23 @@ function drawGeo() {
         const key = d3.select(this.parentNode).datum().key;
         const value = d[1] - d[0];
 
-        const total = d3.sum(formatted, d => d.Local + d["Not Local"]);
-        const percent = ((value / total) * 100).toFixed(1);
+        const totalSum = d3.sum(formatted, d => d.Local + d["Not Local"]);
+        const percent = ((value / totalSum) * 100).toFixed(1);
 
         tooltip
           .style("opacity", 1)
           .html(`
-            <strong>${d.data.category}</strong><br>
-            ${key}: $${value.toLocaleString()}<br>
-            ${percent}% of total
-          `);
+      <strong>${d.data.category}</strong><br>
+      ${key}: $${value.toLocaleString()}<br>
+      ${percent}% of total
+    `);
       })
 
       // CRITICAL: FOLLOW CURSOR
       .on("mousemove", function (event) {
         tooltip
-          .style("left", `${event.pageX + 10}px`)
-          .style("top", `${event.pageY + 10}px`);
+          .style("left", `${event.clientX + 12}px`)
+          .style("top", `${event.clientY + 12}px`);
       })
 
       .on("mouseout", () => {
@@ -234,25 +234,30 @@ function drawPieChart(container, data) {
       const value = +d.data.value;
       const percent = total ? ((value / total) * 100).toFixed(1) : 0;
 
-      console.log(`Pie hover: ${d.data.label}, value: ${value}, percent: ${percent}, total: ${total}`);  // ✅ DEBUG
+      console.log(`Pie hover: ${d.data.label}, value: ${value}, percent: ${percent}, total: ${total}`);
 
+      // 🔥 Pop-out animation
       d3.select(this)
         .transition()
         .duration(150)
         .attr("transform", "scale(1.05)");
 
+      // 🔥 (optional but fine to keep)
+      const [x, y] = d3.pointer(event);
+
+      // ✅ FIXED tooltip positioning
       tooltip
         .style("opacity", 1)
-        .style("left", `${event.pageX + 10}px`)
-        .style("top", `${event.pageY + 10}px`)
+        .style("left", `${event.clientX + 12}px`)
+        .style("top", `${event.clientY + 12}px`)
         .html(`
-          <div style="font-weight:700;">${d.data.label}</div>
-          <div>$${value.toLocaleString()}</div>
-          <div>${percent}% of total</div>
-          <div style="font-size:11px; opacity:0.8;">
-            Total: $${total.toLocaleString()}
-          </div>
-        `);
+      <div style="font-weight:700;">${d.data.label}</div>
+      <div>$${value.toLocaleString()}</div>
+      <div>${percent}% of total</div>
+      <div style="font-size:11px; opacity:0.8;">
+        Total: $${total.toLocaleString()}
+      </div>
+    `);
     })
 
     .on("mousemove", function (event) {
@@ -267,10 +272,8 @@ function drawPieChart(container, data) {
         .duration(150)
         .attr("transform", "scale(1)");
 
-      hideTimeout = setTimeout(() => {
-        tooltip.style("opacity", 0);
-      }, 300);  // Delay hide by 300ms
-    });
+      tooltip.style("opacity", 0);
+    })
 
   svg.selectAll("text")
     .data(arcs)
@@ -323,33 +326,13 @@ function drawPieCharts() {
       { label: "Humane", value: totals.humane }
     ];
 
-    const selector = d3.select("#pie-selector");
-    const container = d3.select("#pie-chart");
-    const title = d3.select("#pie-title");
-
-    function updateChart(type) {
-      container.selectAll("*").remove(); // clear old chart
-
-      if (type === "real") {
-        title.text("Real vs Not Real Spend");
-        drawPieChart("#pie-chart", realVsNotReal);
-      } else {
-        title.text("REAL Breakdown");
-        drawPieChart("#pie-chart", realBreakdown);
-      }
-    }
-
-    // initial render
-    updateChart("real");
-
-    // on change
-    selector.on("change", function () {
-      updateChart(this.value);
-    });
+    // Draw BOTH charts directly into correct divs
+    drawPieChart("#pie-real", realVsNotReal);
+    drawPieChart("#pie-real-breakdown", realBreakdown);
 
   }).catch(err => {
     console.error("Pie chart error:", err);
-    d3.select("#pie-chart").text("Failed to load pie data");
+    d3.select("#pie-real").text("Failed to load pie data");
   });
 }
 
