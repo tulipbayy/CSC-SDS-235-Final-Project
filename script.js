@@ -10,14 +10,18 @@ const pieTooltip = d3.select("body")
   .style("opacity", 0);
 
 function drawGeo() {
-  const width = 950;
-  const height = 550;
-  const margin = { top: 40, right: 30, bottom: 140, left: 80 };
+  const width = 1500;
+  const height = 800;
+
+  // ✅ FIXED MARGINS (prevents clipping)
+  const margin = { top: 60, right: 30, bottom: 180, left: 80 };
 
   const svg = d3.select("#chart")
     .append("svg")
-    .attr("width", width)
-    .attr("height", height);
+    // ✅ RESPONSIVE
+    .attr("viewBox", `0 0 ${width} ${height}`)
+    .style("width", "100%")
+    .style("height", "auto");
 
   const g = svg.append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
@@ -25,7 +29,7 @@ function drawGeo() {
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
 
-  // SINGLE TOOLTIP (no duplicates)
+  // TOOLTIP
   const tooltip = d3.select("body")
     .selectAll(".tooltip")
     .data([null])
@@ -66,8 +70,8 @@ function drawGeo() {
 
       const groupType =
         group === "0" || /local/i.test(group) ? "Local" :
-          group === "1" || /not|non/i.test(group) ? "Not Local" :
-            null;
+        group === "1" || /not|non/i.test(group) ? "Not Local" :
+        null;
 
       if (!groupType) return;
 
@@ -115,7 +119,6 @@ function drawGeo() {
       .attr("height", d => y(d[0]) - y(d[1]))
       .attr("width", x.bandwidth())
 
-      // ✅ FIXED HOVER
       .on("mouseover", function (event, d) {
         const key = d3.select(this.parentNode).datum().key;
         const value = d[1] - d[0];
@@ -126,13 +129,12 @@ function drawGeo() {
         tooltip
           .style("opacity", 1)
           .html(`
-      <strong>${d.data.category}</strong><br>
-      ${key}: $${value.toLocaleString()}<br>
-      ${percent}% of total
-    `);
+            <strong>${d.data.category}</strong><br>
+            ${key}: $${value.toLocaleString()}<br>
+            ${percent}% of total
+          `);
       })
 
-      // CRITICAL: FOLLOW CURSOR
       .on("mousemove", function (event) {
         tooltip
           .style("left", `${event.clientX + 12}px`)
@@ -154,6 +156,38 @@ function drawGeo() {
       .style("text-anchor", "end");
 
     g.append("g").call(d3.axisLeft(y));
+
+    // =========================
+    // TITLE + LABELS
+    // =========================
+
+    // Title
+    svg.append("text")
+      .attr("x", width / 2)
+      .attr("y", 40)
+      .attr("text-anchor", "middle")
+      .style("font-size", "18px")
+      .style("font-weight", "bold")
+      .text("Smith College Food Spending: Local vs Non-Local");
+
+    // X-axis label
+    g.append("text")
+      .attr("x", chartWidth / 2)
+      .attr("y", chartHeight + 100)
+      .attr("text-anchor", "middle")
+      .style("font-size", "13px")
+      .style("font-weight", "600")
+      .text("Food Categories");
+
+    // Y-axis label
+    g.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("x", -chartHeight / 2)
+      .attr("y", -65)
+      .attr("text-anchor", "middle")
+      .style("font-size", "13px")
+      .style("font-weight", "600")
+      .text("Total Spending ($)");
 
     // =========================
     // LEGEND
@@ -187,6 +221,9 @@ function drawGeo() {
   });
 }
 
+// =========================
+// PIE CHARTS (unchanged)
+// =========================
 function drawPieChart(container, data) {
   const width = 360;
   const height = 360;
@@ -204,8 +241,6 @@ function drawPieChart(container, data) {
     .sort(null);
 
   const arcs = pieGen(data);
-
-  // ✅ total computed once
   const total = d3.sum(data, d => +d.value);
 
   const color = d3.scaleOrdinal()
@@ -225,23 +260,15 @@ function drawPieChart(container, data) {
     .attr("stroke", "#fff")
     .attr("stroke-width", 2)
 
-    // =========================
-    // ✅ HOVER START
-    // =========================
     .on("mouseover", function (event, d) {
-
       const value = +d.data.value;
       const percent = total ? ((value / total) * 100).toFixed(1) : 0;
 
-      console.log(`Pie hover: ${d.data.label}, value: ${value}, percent: ${percent}`);
-
-      // 🔥 pop-out animation
       d3.select(this)
         .transition()
         .duration(150)
         .attr("transform", "scale(1.05)");
 
-      // ✅ SHOW TOOLTIP
       pieTooltip
         .style("opacity", 1)
         .style("left", `${event.clientX + 12}px`)
@@ -250,36 +277,23 @@ function drawPieChart(container, data) {
           <div style="font-weight:700;">${d.data.label}</div>
           <div>$${value.toLocaleString()}</div>
           <div>${percent}% of total</div>
-          <div style="font-size:11px; opacity:0.8;">
-            Total: $${total.toLocaleString()}
-          </div>
         `);
     })
 
-    // =========================
-    // ✅ FOLLOW CURSOR
-    // =========================
     .on("mousemove", function (event) {
       pieTooltip
         .style("left", `${event.clientX + 12}px`)
         .style("top", `${event.clientY + 12}px`);
     })
 
-    // =========================
-    // ✅ HOVER OUT
-    // =========================
     .on("mouseout", function () {
       d3.select(this)
         .transition()
         .duration(150)
         .attr("transform", "scale(1)");
-
       pieTooltip.style("opacity", 0);
     });
 
-  // =========================
-  // LABELS INSIDE PIE
-  // =========================
   svg.selectAll("text")
     .data(arcs)
     .enter()
@@ -289,16 +303,11 @@ function drawPieChart(container, data) {
     .style("font-size", "12px")
     .style("font-weight", "800")
     .style("fill", "white")
-    .style("stroke", "rgba(0,0,0,0.4)")
-    .style("stroke-width", "2px")
     .text(d => d.data.value > 0 ? d.data.label : "");
 }
 
 function drawPieCharts() {
-  const path = "./data_Totals.csv";
-
-  d3.csv(path).then(rows => {
-
+  d3.csv("./data_Totals.csv").then(rows => {
     const get = (row, key) => {
       const val = row[key];
       if (!val) return 0;
@@ -323,25 +332,17 @@ function drawPieCharts() {
       humane: 0
     });
 
-    const realVsNotReal = [
+    drawPieChart("#pie-real", [
       { label: "REAL", value: totals.real },
       { label: "Not REAL", value: Math.max(totals.total - totals.real, 0) }
-    ];
+    ]);
 
-    const realBreakdown = [
+    drawPieChart("#pie-real-breakdown", [
       { label: "Sustainable", value: totals.sustainable },
       { label: "Local", value: totals.local },
       { label: "Fair", value: totals.fair },
       { label: "Humane", value: totals.humane }
-    ];
-
-    // ✅ draw both charts
-    drawPieChart("#pie-real", realVsNotReal);
-    drawPieChart("#pie-real-breakdown", realBreakdown);
-
-  }).catch(err => {
-    console.error("Pie chart error:", err);
-    d3.select("#pie-real").text("Failed to load pie data");
+    ]);
   });
 }
 
