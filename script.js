@@ -348,3 +348,29 @@ function drawPieCharts() {
 
 drawGeo();
 drawPieCharts();
+
+
+// =========================
+// PIE CHART DROPDOWN CONTROL
+// =========================
+d3.select("#pie-selector").on("change", function () {
+  const value = this.value;
+
+  const realCard = document.querySelector("#card-real");
+  const breakdownCard = document.querySelector("#card-breakdown");
+
+  if (value === "all") {
+    realCard.style.display = "flex";
+    breakdownCard.style.display = "flex";
+  }
+
+  if (value === "real") {
+    realCard.style.display = "flex";
+    breakdownCard.style.display = "none";
+  }
+
+  if (value === "breakdown") {
+    realCard.style.display = "none";
+    breakdownCard.style.display = "flex";
+  }
+});
