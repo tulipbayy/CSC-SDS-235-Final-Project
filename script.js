@@ -13,12 +13,12 @@ function drawGeo() {
   const width = 1100;
   const height = 800;
 
-  // ✅ FIXED MARGINS (prevents clipping)
+  //  FIXED MARGINS (prevents clipping)
   const margin = { top: 60, right: 30, bottom: 180, left: 80 };
 
   const svg = d3.select("#chart")
     .append("svg")
-    // ✅ RESPONSIVE
+    // RESPONSIVE
     .attr("viewBox", `0 0 ${width} ${height}`)
     .style("width", "100%")
     .style("height", "auto");
@@ -36,9 +36,9 @@ function drawGeo() {
     .join("div")
     .attr("class", "tooltip");
 
-  d3.text("categories.csv").then(text => {
+  d3.text("Categories.csv").then(text => {
     const lines = text.split(/\r?\n/).filter(line => line.trim() !== "");
-    if (lines.length < 3) throw new Error("categories.csv must have at least 3 rows");
+    if (lines.length < 3) throw new Error("Categories.csv must have at least 3 rows");
 
     const firstLine = lines[0].split(",");
     const secondLine = lines[1].split(",");
