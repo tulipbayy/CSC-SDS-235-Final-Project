@@ -15,7 +15,7 @@ We worked with sustainability-related datasets provided through CEEDS, including
 Research Question:
 How are dining funds distributed between local and non-local suppliers at Smith College, and what opportunities exist to shift spending toward local food systems?
 
-# Visualizations
+# Visualizations 
 This project includes three coordinated visualizations:
 
 # 1. Sankey Diagram – Dining Spending Flow
